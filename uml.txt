@@ -1,0 +1,130 @@
+classDiagram
+    class User {
+        -Long id
+        -String email
+        -String password
+        -String firstName
+        -String lastName
+        -Role role
+        -Integer reputationPoints
+        -List~Badge~ badges
+  
+    }
+
+    class Question {
+        -Long id
+        -String title
+        -String content
+        -User author
+        -List~Tag~ tags
+        -Integer votes
+        -Boolean isValidated
+        -DateTime createdAt
+        -List~Answer~ answers
+        +upvote()
+        +downvote()
+        +validateByAI()
+    }
+
+    class Answer {
+        -Long id
+        -String content
+        -User author
+        -Integer votes
+        -Boolean isAccepted
+        -DateTime createdAt
+        +upvote()
+        +downvote()
+        +markAsAccepted()
+    }
+
+    class Blog {
+        -Long id
+        -String title
+        -String content
+        -User author
+        -List~Tag~ tags
+        -Integer views
+        -Integer likes
+        -List~Comment~ comments
+        -Boolean isAIValidated
+        +like()
+        +validateWithAI()
+    }
+
+    class Club {
+        -Long id
+        -String name
+        -String description
+        -User creator
+        -List~User~ members
+        -List~Discussion~ discussions
+        +addMember()
+        +removeMember()
+        +createDiscussion()
+    }
+
+    class Discussion {
+        -Long id
+        -String title
+        -String content
+        -User author
+        -List~Comment~ comments
+        -DateTime createdAt
+        +addComment()
+    }
+
+    class Comment {
+        -Long id
+        -String content
+        -User author
+        -DateTime createdAt
+        +edit()
+        +delete()
+    }
+
+    class Tag {
+        -Long id
+        -String name
+        -String description
+    }
+
+    class Badge {
+        -Long id
+        -String name
+        -String description
+        -BadgeType type
+    }
+
+    class Donation {
+        -Long id
+        -User donor
+        -User recipient
+        -Double amount
+        -DateTime donatedAt
+        -String message
+    }
+
+    class Notification {
+        -Long id
+        -User recipient
+        -String message
+        -NotificationType type
+        -Boolean isRead
+        -DateTime createdAt
+        +markAsRead()
+    }
+
+    User "1" -- "*" Question : creates
+    User "1" -- "*" Answer : writes
+    User "1" -- "*" Blog : authors
+    User "1" -- "*" Club : creates
+    User "*" -- "*" Club : joins
+    Question "1" -- "*" Answer : has
+    Question "*" -- "*" Tag : tagged with
+    Blog "*" -- "*" Tag : tagged with
+    Blog "1" -- "*" Comment : has
+    Discussion "1" -- "*" Comment : has
+    User "1" -- "*" Badge : earns
+    User "1" -- "*" Donation : makes
+    User "1" -- "*" Notification : receives
