@@ -5,12 +5,16 @@ classDiagram
         -password : String
         -firstName : String
         -lastName : String
-        -role : Enumeration
+        -role : Role
         -reputationPoints : Integer
-        -badges : List
-        +getId() : Integer
-        +getEmail() : String
-        +setEmail(email : String) : void
+        -createdAt : DateTime
+        -updatedAt : DateTime
+    }
+    class Role {
+        <<enumeration>>
+        Student
+        Formateur
+        Admin
     }
     class Question {
         -id : Integer
@@ -18,20 +22,16 @@ classDiagram
         -content : String
         -votes : Integer
         -isValidated : Boolean
-        -createdAt : Date
-        +upvote() : void
-        +downvote() : void
-        +validateByAI() : Boolean
+        -createdAt : DateTime
+        -updatedAt : DateTime
     }
     class Answer {
         -id : Integer
         -content : String
         -votes : Integer
         -isAccepted : Boolean
-        -createdAt : Date
-        +upvote() : void
-        +downvote() : void
-        +markAsAccepted() : void
+        -createdAt : DateTime
+        -updatedAt : DateTime
     }
     class Blog {
         -id : Integer
@@ -40,55 +40,50 @@ classDiagram
         -views : Integer
         -likes : Integer
         -isAIValidated : Boolean
-        +like() : void
-        +validateWithAI() : Boolean
+        -createdAt : DateTime
+        -updatedAt : DateTime
     }
     class Club {
         -id : Integer
         -name : String
         -description : String
-        +addMember() : void
-        +removeMember() : void
-        +createDiscussion() : void
-    }
-    class Discussion {
-        -id : Integer
-        -title : String
-        -content : String
-        -createdAt : Date
-        +addComment() : void
+        -maxMembers : Integer
+        -isPrivate : Boolean
+        -createdAt : DateTime
     }
     class Comment {
         -id : Integer
         -content : String
-        -createdAt : Date
-        +edit() : void
-        +delete() : void
+        -createdAt : DateTime
+        -updatedAt : DateTime
+        -parentId : Integer
     }
     class Tag {
         -id : Integer
         -name : String
         -description : String
+        -usageCount : Integer
     }
     class Badge {
         -id : Integer
         -name : String
         -description : String
-        -type : Enumeration
+        -type : BadgeType
+        -requiredPoints : Integer
+    }
+    class BadgeType {
+        <<enumeration>>
+        Bronze
+        Silver
+        Gold
+        Platinum
     }
     class Donation {
         -id : Integer
         -amount : Double
-        -donatedAt : Date
+        -donatedAt : DateTime
         -message : String
-    }
-    class Notification {
-        -id : Integer
-        -message : String
-        -type : Enumeration
-        -isRead : Boolean
-        -createdAt : Date
-        +markAsRead() : void
+        -isAnonymous : Boolean
     }
 
     User "1" --> "*" Question : creates
@@ -96,11 +91,13 @@ classDiagram
     User "1" --> "*" Blog : authors
     User "1" --> "*" Club : creates
     User "*" --> "*" Club : joins
+    User "1" --> "*" Comment : writes
     Question "1" --> "*" Answer : has
     Question "*" --> "*" Tag : tagged with
     Blog "*" --> "*" Tag : tagged with
     Blog "1" --> "*" Comment : has
-    Discussion "1" --> "*" Comment : has
+    Question "1" --> "*" Comment : has
     User "1" --> "*" Badge : earns
     User "1" --> "*" Donation : makes
-    User "1" --> "*" Notification : receives
+    User "1" --> "1" Role : has
+    Badge "1" --> "1" BadgeType : is of type
