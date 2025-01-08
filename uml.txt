@@ -1,130 +1,106 @@
 classDiagram
     class User {
-        -Long id
-        -String email
-        -String password
-        -String firstName
-        -String lastName
-        -Role role
-        -Integer reputationPoints
-        -List~Badge~ badges
-  
+        -id : Integer
+        -email : String
+        -password : String
+        -firstName : String
+        -lastName : String
+        -role : Enumeration
+        -reputationPoints : Integer
+        -badges : List
+        +getId() : Integer
+        +getEmail() : String
+        +setEmail(email : String) : void
     }
-
     class Question {
-        -Long id
-        -String title
-        -String content
-        -User author
-        -List~Tag~ tags
-        -Integer votes
-        -Boolean isValidated
-        -DateTime createdAt
-        -List~Answer~ answers
-        +upvote()
-        +downvote()
-        +validateByAI()
+        -id : Integer
+        -title : String
+        -content : String
+        -votes : Integer
+        -isValidated : Boolean
+        -createdAt : Date
+        +upvote() : void
+        +downvote() : void
+        +validateByAI() : Boolean
     }
-
     class Answer {
-        -Long id
-        -String content
-        -User author
-        -Integer votes
-        -Boolean isAccepted
-        -DateTime createdAt
-        +upvote()
-        +downvote()
-        +markAsAccepted()
+        -id : Integer
+        -content : String
+        -votes : Integer
+        -isAccepted : Boolean
+        -createdAt : Date
+        +upvote() : void
+        +downvote() : void
+        +markAsAccepted() : void
     }
-
     class Blog {
-        -Long id
-        -String title
-        -String content
-        -User author
-        -List~Tag~ tags
-        -Integer views
-        -Integer likes
-        -List~Comment~ comments
-        -Boolean isAIValidated
-        +like()
-        +validateWithAI()
+        -id : Integer
+        -title : String
+        -content : String
+        -views : Integer
+        -likes : Integer
+        -isAIValidated : Boolean
+        +like() : void
+        +validateWithAI() : Boolean
     }
-
     class Club {
-        -Long id
-        -String name
-        -String description
-        -User creator
-        -List~User~ members
-        -List~Discussion~ discussions
-        +addMember()
-        +removeMember()
-        +createDiscussion()
+        -id : Integer
+        -name : String
+        -description : String
+        +addMember() : void
+        +removeMember() : void
+        +createDiscussion() : void
     }
-
     class Discussion {
-        -Long id
-        -String title
-        -String content
-        -User author
-        -List~Comment~ comments
-        -DateTime createdAt
-        +addComment()
+        -id : Integer
+        -title : String
+        -content : String
+        -createdAt : Date
+        +addComment() : void
     }
-
     class Comment {
-        -Long id
-        -String content
-        -User author
-        -DateTime createdAt
-        +edit()
-        +delete()
+        -id : Integer
+        -content : String
+        -createdAt : Date
+        +edit() : void
+        +delete() : void
     }
-
     class Tag {
-        -Long id
-        -String name
-        -String description
+        -id : Integer
+        -name : String
+        -description : String
     }
-
     class Badge {
-        -Long id
-        -String name
-        -String description
-        -BadgeType type
+        -id : Integer
+        -name : String
+        -description : String
+        -type : Enumeration
     }
-
     class Donation {
-        -Long id
-        -User donor
-        -User recipient
-        -Double amount
-        -DateTime donatedAt
-        -String message
+        -id : Integer
+        -amount : Double
+        -donatedAt : Date
+        -message : String
     }
-
     class Notification {
-        -Long id
-        -User recipient
-        -String message
-        -NotificationType type
-        -Boolean isRead
-        -DateTime createdAt
-        +markAsRead()
+        -id : Integer
+        -message : String
+        -type : Enumeration
+        -isRead : Boolean
+        -createdAt : Date
+        +markAsRead() : void
     }
 
-    User "1" -- "*" Question : creates
-    User "1" -- "*" Answer : writes
-    User "1" -- "*" Blog : authors
-    User "1" -- "*" Club : creates
-    User "*" -- "*" Club : joins
-    Question "1" -- "*" Answer : has
-    Question "*" -- "*" Tag : tagged with
-    Blog "*" -- "*" Tag : tagged with
-    Blog "1" -- "*" Comment : has
-    Discussion "1" -- "*" Comment : has
-    User "1" -- "*" Badge : earns
-    User "1" -- "*" Donation : makes
-    User "1" -- "*" Notification : receives
+    User "1" --> "*" Question : creates
+    User "1" --> "*" Answer : writes
+    User "1" --> "*" Blog : authors
+    User "1" --> "*" Club : creates
+    User "*" --> "*" Club : joins
+    Question "1" --> "*" Answer : has
+    Question "*" --> "*" Tag : tagged with
+    Blog "*" --> "*" Tag : tagged with
+    Blog "1" --> "*" Comment : has
+    Discussion "1" --> "*" Comment : has
+    User "1" --> "*" Badge : earns
+    User "1" --> "*" Donation : makes
+    User "1" --> "*" Notification : receives
