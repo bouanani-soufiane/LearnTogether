@@ -11,10 +11,8 @@ classDiagram
         -updatedAt : DateTime
     }
     class Role {
-        <<enumeration>>
-        Student
-        Formateur
-        Admin
+        -id : Integer
+        -name : String
     }
     class Question {
         -id : Integer
@@ -86,8 +84,9 @@ classDiagram
         -isAnonymous : Boolean
     }
 
-    User "1" --> "*" Question : creates
+    User "*" --> "1" Role : has
     User "1" --> "*" Answer : writes
+    User "1" --> "*" Question : creates
     User "1" --> "*" Blog : authors
     User "1" --> "*" Club : creates
     User "*" --> "*" Club : joins
@@ -98,6 +97,5 @@ classDiagram
     Blog "1" --> "*" Comment : has
     Question "1" --> "*" Comment : has
     User "1" --> "*" Badge : earns
-    User "1" --> "*" Donation : makes
-    User "1" --> "1" Role : has
     Badge "1" --> "1" BadgeType : is of type
+    User "1" --> "*" Donation : makes
