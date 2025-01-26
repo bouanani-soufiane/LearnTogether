@@ -76,26 +76,33 @@ classDiagram
         Gold
         Platinum
     }
-    class Donation {
+    
+    class Media{
         -id : Integer
-        -amount : Double
-        -donatedAt : DateTime
-        -message : String
-        -isAnonymous : Boolean
+        -type : String
+        -url : String
+        -uploadedAt : DateTime
+        -size : Double
+
     }
 
-    User "*" --> "1" Role : has
-    User "1" --> "*" Answer : writes
-    User "1" --> "*" Question : creates
-    User "1" --> "*" Blog : authors
-    User "1" --> "*" Club : creates
-    User "*" --> "*" Club : joins
-    User "1" --> "*" Comment : writes
     Question "1" --> "*" Answer : has
+    Question "1" --> "*" Media : contains
     Question "*" --> "*" Tag : tagged with
-    Blog "*" --> "*" Tag : tagged with
-    Blog "1" --> "*" Comment : has
+    User "1" --> "*" Media : uploads
     Question "1" --> "*" Comment : has
     User "1" --> "*" Badge : earns
+    User "*" --> "1" Role : has
     Badge "1" --> "1" BadgeType : is of type
-    User "1" --> "*" Donation : makes
+    Blog "1" --> "*" Media : contains
+    User "1" --> "*" Answer : writes
+    Comment "1" --> "*" Media : contains
+    User "1" --> "*" Question : creates
+    User "1" --> "*" Blog : authors
+    User "*" --> "*" Club : joins
+    Answer "1" --> "*" Media : contains
+    User "1" --> "*" Club : creates
+    User "1" --> "*" Comment : writes
+    Blog "*" --> "*" Tag : tagged with
+    Blog "1" --> "*" Comment : has
+    
