@@ -105,4 +105,3 @@ classDiagram
     User "1" --> "*" Comment : writes
     Blog "*" --> "*" Tag : tagged with
     Blog "1" --> "*" Comment : has
-    
