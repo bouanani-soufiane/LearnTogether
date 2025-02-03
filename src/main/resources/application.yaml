@@ -6,15 +6,15 @@ spring:
     username: postgres
     password: ""
     driver-class-name: org.postgresql.Driver
-    liquibase:
-      change-log: classpath:db/changelog/db.changelog-master.yaml
-    jdbc:
-      template:
-        query-timeout: 5
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+  jdbc:
+    template:
+      query-timeout: 5
 
 logging:
   level:
     org:
       springframework:
         jdbc:
-          core=DEBUG:
+          core: DEBUG
