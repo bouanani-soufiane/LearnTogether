@@ -1,20 +1,13 @@
 databaseChangeLog:
-  - changeSet:
-      id: 1
-      author: bouanani-soufiane
-      changes:
-        - createTable:
-            tableName: user
-            columns:
-              - column:
-                  name: id
-                  type: int
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: name
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
+  - include:
+      file: db/changelog/migrations/V1__create_schemas.sql
+  - include:
+      file: db/changelog/migrations/user-changelog.sql
+  - include:
+      file: db/changelog/migrations/reputation-changelog.sql
+  - include:
+      file: db/changelog/migrations/content-changelog.sql
+  - include:
+      file: db/changelog/migrations/media-changelog.sql
+  - include:
+      file: db/changelog/migrations/clubs-changelog.sql
