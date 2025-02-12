@@ -185,9 +185,9 @@
 				<version>4.25.1</version>
 				<configuration>
 					<driver>org.postgresql.Driver</driver>
-					<url>jdbc:postgresql://localhost:5432/learn_together</url>
-					<username>postgres</username>
-					<password></password>
+					<url>jdbc:postgresql://localhost:5432/learntogether</url>
+					<username>soufiane</username>
+					<password>1234</password>
 					<changeLogFile>src/main/resources/db/changelog/db.changelog-master.yaml</changeLogFile>
 				</configuration>
 				<executions>

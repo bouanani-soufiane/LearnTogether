@@ -3,11 +3,17 @@ spring:
     name: LearnTogether
   datasource:
     url: jdbc:postgresql://localhost:5432/learn_together
-    username: postgres
-    password: ""
+    username: soufiane
+    password: 1234
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
   jdbc:
     template:
       query-timeout: 5

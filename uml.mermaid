@@ -1,74 +1,35 @@
 classDiagram
     class User {
         -id : Integer
+        -name : String
         -email : String
         -password : String
-        -firstName : String
-        -lastName : String
-        -role : Role
-        -reputationPoints : Integer
-        -createdAt : DateTime
-        -updatedAt : DateTime
     }
-    class Role {
+
+    class ReputationScore {
         -id : Integer
-        -name : String
+        -points : Integer
+        -ListBadge : Badge[1..*]
+        -ReputationLevel: level
     }
-    class Question {
+
+    class Profile {
         -id : Integer
-        -title : String
-        -content : String
-        -votes : Integer
-        -isValidated : Boolean
-        -createdAt : DateTime
-        -updatedAt : DateTime
+        -bio : String
+        -location : String
+        -websiteLink : String
+        -birthdate : Date
+        -joinedAt : Date
     }
-    class Answer {
-        -id : Integer
-        -content : String
-        -votes : Integer
-        -isAccepted : Boolean
-        -createdAt : DateTime
-        -updatedAt : DateTime
-    }
-    class Blog {
-        -id : Integer
-        -title : String
-        -content : String
-        -views : Integer
-        -likes : Integer
-        -isAIValidated : Boolean
-        -createdAt : DateTime
-        -updatedAt : DateTime
-    }
-    class Club {
-        -id : Integer
-        -name : String
-        -description : String
-        -maxMembers : Integer
-        -isPrivate : Boolean
-        -createdAt : DateTime
-    }
-    class Comment {
-        -id : Integer
-        -content : String
-        -createdAt : DateTime
-        -updatedAt : DateTime
-        -parentId : Integer
-    }
-    class Tag {
-        -id : Integer
-        -name : String
-        -description : String
-        -usageCount : Integer
-    }
+
     class Badge {
         -id : Integer
         -name : String
-        -description : String
         -type : BadgeType
         -requiredPoints : Integer
+        -AchievementCriteria: string
     }
+
     class BadgeType {
         <<enumeration>>
         Bronze
@@ -76,32 +37,109 @@ classDiagram
         Gold
         Platinum
     }
-    
+
+    class Role {
+        -id : Integer
+        -name : String
+    }
+
+    class Question {
+        -id : Integer
+        -title : String
+        -content : String
+    }
+
+    class Vote {
+        -id : Integer
+        -value : Integer
+    }
+
+    class Answer {
+        -id : Integer
+        -content : String
+        -isValid : Boolean
+
+    }
+
+    class Blog {
+        -id : Integer
+        -title : String
+        -content : String
+        -views : Integer
+        -isIAvalid : ReviewStatus
+        -reviewStatus : ReviewStatus
+        -reviewedAt : Date
+    }
+
+    class ReviewStatus {
+        <<enumeration>>
+        APPROVED
+        REJECTED
+        PENDING
+    }
+
+    class Like {
+        -id : Integer
+        -likedAt : Date
+    }
+
+    class Club {
+        -id : Integer
+        -name : String
+        -description : String
+        -maxMembers : Integer
+        -isPrivate : Boolean
+    }
+
+    class Comment {
+        -id : Integer
+        -content : String
+        -referenceContent : string
+    }
+
+    class Tag {
+        -id : Integer
+        -name : String
+    }
+
     class Media{
         -id : Integer
         -type : String
         -url : String
-        -uploadedAt : DateTime
+        -referenceType : String
+        -uploadedAt : Date
         -size : Double
 
     }
 
-    Question "1" --> "*" Answer : has
-    Question "1" --> "*" Media : contains
-    Question "*" --> "*" Tag : tagged with
-    User "1" --> "*" Media : uploads
-    Question "1" --> "*" Comment : has
-    User "1" --> "*" Badge : earns
+
+    User "1" --> "*" Vote : casts
+    Vote "*" --> "1" Question : for
+    ReputationScore "1" --> "*" Badge : contains
+    Vote "*" --> "1" Answer : for
     User "*" --> "1" Role : has
+    Question "1" --> "*" Media : contains
+    Blog "1" --> "*" Like : liked by
     Badge "1" --> "1" BadgeType : is of type
-    Blog "1" --> "*" Media : contains
+    Blog "1" --> "*" Comment : has
+    Blog "1" --> "1" ReviewStatus : is of status
+    Answer "1" --> "*" Media : contains
     User "1" --> "*" Answer : writes
+    Blog "1" --> "*" Media : contains
     Comment "1" --> "*" Media : contains
     User "1" --> "*" Question : creates
-    User "1" --> "*" Blog : authors
+    User "1" --> "*" Blog : create
     User "*" --> "*" Club : joins
-    Answer "1" --> "*" Media : contains
-    User "1" --> "*" Club : creates
+    Profile "1" --> "1" Media : profileImage
+    Question "1" --> "*" Answer : has
     User "1" --> "*" Comment : writes
+    Question "*" --> "*" Tag : tagged with
     Blog "*" --> "*" Tag : tagged with
-    Blog "1" --> "*" Comment : has
+    Blog "*" --> "1" User : reviewedBy
+    User "1" --> "*" Like : likes
+    Question "1" --> "*" Comment : has
+    User "1" --> "1" Profile : has
+    User "1" --> "1" ReputationScore : has
+    User "1" --> "*" Club : creates
+
+
