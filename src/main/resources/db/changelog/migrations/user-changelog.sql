@@ -3,13 +3,17 @@
 -- Set the search path to the 'user' schema
 SET search_path TO youcoder;
 
+-- Create the 'UserStatus' enum
+CREATE TYPE youcoder.user_status AS ENUM ('ACTIVE', 'INACTIVE', 'BANNED');
+
 -- Create the 'users' table
 CREATE TABLE youcoder.users
 (
     id        SERIAL PRIMARY KEY,
-    full_name TEXT NOT NULL,
-    email     TEXT NOT NULL UNIQUE,
-    password  TEXT NOT NULL
+    full_name TEXT                 NOT NULL,
+    email     TEXT                 NOT NULL UNIQUE,
+    password  TEXT                 NOT NULL,
+    status    youcoder.user_status NOT NULL DEFAULT 'ACTIVE'
 );
 
 -- Create the 'profiles' table
