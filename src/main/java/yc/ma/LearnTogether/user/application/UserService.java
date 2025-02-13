@@ -19,13 +19,16 @@ public class UserService {
 
     @Transactional
     public User createUser(User user) {
-        Profile profile = user.getProfile();
-        profile.setUserId(user.getId());
+        if (user.getProfile() == null) {
+            Profile profile = new Profile();
+            profile.setUserId(user.getId());
+            user.setProfile(profile);
+        }
 
         user = userRepository.save(user);
-        profile.setUserId(user.getId());
         return user;
     }
+
 
     public User updateUserProfile(Long userId, Profile profile) {
         User user = userRepository.findById(userId)

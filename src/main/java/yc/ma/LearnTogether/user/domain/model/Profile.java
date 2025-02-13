@@ -26,6 +26,6 @@ public class Profile {
     private String location;
     private String websiteLink;
     private LocalDate birthdate;
-    private LocalDate joinedAt;
+    private LocalDate joinedAt = LocalDate.now();
 
 }
