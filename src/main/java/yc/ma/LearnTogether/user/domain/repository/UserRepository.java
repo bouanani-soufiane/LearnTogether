@@ -6,4 +6,5 @@ import yc.ma.LearnTogether.user.domain.model.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
+
 }
