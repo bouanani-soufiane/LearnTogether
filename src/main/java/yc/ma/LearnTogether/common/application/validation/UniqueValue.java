@@ -19,5 +19,7 @@ public @interface UniqueValue {
 
     String fieldName();
 
-    Class<?> entityClass();
+    String schemaName();
+
+    String tableName();
 }
