@@ -1,5 +1,5 @@
 package yc.ma.LearnTogether.user.domain.model;
 
-public enum     UserStatus {
+public enum UserStatus {
     ACTIVE, INACTIVE, BANNED
 }

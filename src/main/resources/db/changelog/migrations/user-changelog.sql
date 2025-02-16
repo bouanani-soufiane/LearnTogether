@@ -20,11 +20,11 @@ CREATE TABLE youcoder.users
 
 CREATE TABLE youcoder.profiles
 (
-    user_id      INTEGER PRIMARY KEY,
+    user_id      INTEGER NOT NULL PRIMARY KEY,
     bio          TEXT,
     location     TEXT,
     website_link TEXT,
     birthdate    DATE,
-    joined_at    DATE DEFAULT CURRENT_DATE,
+    joined_at    timestamp,
     FOREIGN KEY (user_id) REFERENCES youcoder.users (id) ON DELETE CASCADE
 );

@@ -1,31 +1,31 @@
 package yc.ma.LearnTogether.user.domain.model;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+import lombok.*;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__(@PersistenceCreator))
-@NoArgsConstructor()
+@NoArgsConstructor
 @Table(name = "profiles", schema = "youcoder")
+
 public class Profile {
 
-    @Id
-    private Long id;
-
     @Column("user_id")
-    private Long userId;
+    private @With Long userId;
+
     private String bio;
     private String location;
-    private String websiteLink;
-    private LocalDate birthdate;
-    private LocalDate joinedAt = LocalDate.now();
 
+    @Column("website_link")
+    private String websiteLink;
+
+    private LocalDate birthdate;
+
+    @Column("joined_at")
+    private Instant joinedAt = Instant.now();
 }
