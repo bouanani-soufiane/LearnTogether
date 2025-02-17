@@ -7,11 +7,15 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Data
-@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__(@PersistenceCreator))
-@NoArgsConstructor
+import java.time.LocalDate;
+
 @Table(name = "users", schema = "youcoder")
+@Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__(@PersistenceCreator))
+@NoArgsConstructor()
+@ToString
 public class User {
+
     @Id
     @With
     private Long id;
@@ -20,17 +24,37 @@ public class User {
     private String fullName;
 
     private String email;
+
     private String password;
+
     private UserStatus status;
+
     private UserRole role;
 
     @MappedCollection(idColumn = "user_id")
     private Profile profile;
 
-    public void assignProfileWithUserId () {
-        if (this.id == null) {
-            throw new IllegalStateException("User ID must be generated before assigning profile.");
-        }
-        this.profile.setUserId(this.id);
+    public static User create ( String fullName, String email, String password, UserRole role ) {
+        User user = new User();
+        user.fullName = fullName;
+        user.email = email;
+        user.password = password;
+        user.role = role;
+        user.status = UserStatus.ACTIVE;
+        user.profile = Profile.createDefault();
+        return user;
     }
+
+
+    public void updateDetails ( String fullName, String email, String password ) {
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+    }
+
+
+    public void updateProfile(String bio, String location, String websiteLink, LocalDate birthdate) {
+        this.profile.update(bio, location, websiteLink, birthdate);
+    }
+
 }

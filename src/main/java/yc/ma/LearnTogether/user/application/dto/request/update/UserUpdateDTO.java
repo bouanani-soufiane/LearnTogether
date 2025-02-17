@@ -1,13 +1,12 @@
 package yc.ma.LearnTogether.user.application.dto.request.update;
 
-import yc.ma.LearnTogether.user.domain.model.UserRole;
-import yc.ma.LearnTogether.user.domain.model.UserStatus;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public record UserUpdateDTO(
-        String fullName,
-        String email,
-        String password,
-        UserStatus status,
-        UserRole role
+        @NotBlank String fullName,
+        @NotBlank @Email String email,
+        @NotBlank @Size(min = 8, message = "password must be min 8 characters") String password
 ) {
 }
