@@ -14,6 +14,7 @@ import yc.ma.LearnTogether.user.application.dto.request.create.ProfileCreateDTO;
 import yc.ma.LearnTogether.user.application.dto.request.create.UserRequestDTO;
 import yc.ma.LearnTogether.user.application.dto.request.update.UserUpdateDTO;
 import yc.ma.LearnTogether.user.application.dto.response.UserResponseDTO;
+import yc.ma.LearnTogether.user.application.mapper.ProfileMapper;
 import yc.ma.LearnTogether.user.application.mapper.UserMapper;
 import yc.ma.LearnTogether.user.domain.model.User;
 import yc.ma.LearnTogether.user.domain.repository.UserRepository;
@@ -28,6 +29,7 @@ public class DefaultUserService implements UserService {
 
     private final UserRepository repository;
     private final UserMapper mapper;
+    private final ProfileMapper profileMapper;
 
     // => todo : use projection to avoid extra mapping here
     public PagedResult<UserResponseDTO> findUsers ( int pageNo, int pageSize ) {
@@ -61,7 +63,7 @@ public class DefaultUserService implements UserService {
     @Transactional
     public UserResponseDTO updateUserProfile ( Long userId, ProfileCreateDTO profile ) {
         User user = findUserById(userId);
-        user.updateProfile(profile.bio(), profile.location(), profile.websiteLink(), profile.birthdate());
+        user.updateProfile(profileMapper.toEntity(profile));
         return mapper.toResponseDto(repository.save(user));
     }
 

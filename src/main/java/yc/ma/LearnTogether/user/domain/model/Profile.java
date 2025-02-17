@@ -1,11 +1,7 @@
 package yc.ma.LearnTogether.user.domain.model;
 
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.With;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -42,13 +38,13 @@ public class Profile {
         return profile;
     }
 
-    public void update(String bio, String location, String websiteLink, LocalDate birthdate) {
+    public void update(Profile profile) {
         if (birthdate != null && birthdate.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("Birthdate cannot be in the future");
         }
-        this.bio = bio;
-        this.location = location;
-        this.websiteLink = websiteLink;
-        this.birthdate = birthdate;
+        this.bio = profile.getBio();
+        this.location = profile.getLocation();
+        this.websiteLink = profile.getWebsiteLink();
+        this.birthdate = profile.getBirthdate();
     }
 }

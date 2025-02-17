@@ -53,8 +53,8 @@ public class User {
     }
 
 
-    public void updateProfile(String bio, String location, String websiteLink, LocalDate birthdate) {
-        this.profile.update(bio, location, websiteLink, birthdate);
+    public void updateProfile(Profile profile) {
+        this.profile.update(profile);
     }
 
 }
