@@ -2,7 +2,7 @@ spring:
   application:
     name: LearnTogether
   datasource:
-    url: jdbc:postgresql://localhost:5432/learn_together
+    url: jdbc:postgresql://localhost:5433/learntogether
     username: soufiane
     password: 1234
     driver-class-name: org.postgresql.Driver
@@ -17,6 +17,7 @@ spring:
   jdbc:
     template:
       query-timeout: 5
+
 
 logging:
   level:
