@@ -12,13 +12,17 @@ import yc.ma.LearnTogether.common.application.PagedResult;
 import yc.ma.LearnTogether.common.domain.exception.NotFoundException;
 import yc.ma.LearnTogether.content.application.dto.request.create.AnswerCreateDTO;
 import yc.ma.LearnTogether.content.application.dto.request.create.QuestionCreateDTO;
+import yc.ma.LearnTogether.content.application.dto.request.create.VoteCreateDTO;
 import yc.ma.LearnTogether.content.application.dto.request.update.QuestionUpdateDTO;
 import yc.ma.LearnTogether.content.application.dto.response.AnswerResponseDTO;
 import yc.ma.LearnTogether.content.application.dto.response.QuestionResponseDTO;
+import yc.ma.LearnTogether.content.application.dto.response.VoteResponseDTO;
 import yc.ma.LearnTogether.content.application.mapper.AnswerMapper;
 import yc.ma.LearnTogether.content.application.mapper.QuestionMapper;
+import yc.ma.LearnTogether.content.application.mapper.VoteMapper;
 import yc.ma.LearnTogether.content.domain.model.Answer;
 import yc.ma.LearnTogether.content.domain.model.Question;
+import yc.ma.LearnTogether.content.domain.model.Vote;
 import yc.ma.LearnTogether.content.domain.repository.QuestionRepository;
 import yc.ma.LearnTogether.content.domain.service.QuestionService;
 
@@ -31,6 +35,8 @@ public class DefaultQuestionService implements QuestionService {
     private final QuestionRepository repository;
     private final QuestionMapper questionMapper;
     private final AnswerMapper answerMapper;
+    private final VoteMapper voteMapper;
+
 
 
     @Override
@@ -58,6 +64,36 @@ public class DefaultQuestionService implements QuestionService {
 
         return answerMapper.toResponseDto(answer);
     }
+
+    @Override
+    @Transactional
+    public VoteResponseDTO addVoteToQuestion( Long questionId, VoteCreateDTO voteDto) {
+        Question question = findQuestionById(questionId);
+
+        Vote vote = Vote.forQuestion(voteDto.userId(), questionId, voteDto.value());
+
+        question.getVotes().add(vote);
+
+        Question savedQuestion = repository.save(question);
+
+        Vote savedVote = savedQuestion.getVotes().stream()
+                .filter(v -> v.getUserId().equals(voteDto.userId()) && v.getValue() == voteDto.value())
+                .findFirst()
+                .orElse(vote);
+
+        return voteMapper.toResponseDto(savedVote);
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public Page<QuestionResponseDTO> findAll ( Pageable pageable ) {

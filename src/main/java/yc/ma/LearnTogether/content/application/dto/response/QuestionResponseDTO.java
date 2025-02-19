@@ -6,6 +6,7 @@ public record QuestionResponseDTO(
         Long id,
         String title,
         String content,
-        Set<AnswerResponseDTO> answers
+        Set<AnswerResponseDTO> answers,
+        Set<VoteResponseDTO> votes
 ) {
 }

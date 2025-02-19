@@ -26,6 +26,9 @@ public class Question {
     @MappedCollection(idColumn = "question_id")
     private Set<Answer> answers = new HashSet<>();
 
+    @MappedCollection(idColumn = "question_id")
+    private Set<Vote> votes = new HashSet<>();
+
     public static Question create ( String title, String content, Long userId ) {
         Question question = new Question();
         question.title = title;

@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import yc.ma.LearnTogether.common.application.PagedResult;
 import yc.ma.LearnTogether.content.application.dto.request.create.AnswerCreateDTO;
 import yc.ma.LearnTogether.content.application.dto.request.create.QuestionCreateDTO;
+import yc.ma.LearnTogether.content.application.dto.request.create.VoteCreateDTO;
 import yc.ma.LearnTogether.content.application.dto.response.AnswerResponseDTO;
 import yc.ma.LearnTogether.content.application.dto.response.QuestionResponseDTO;
+import yc.ma.LearnTogether.content.application.dto.response.VoteResponseDTO;
 import yc.ma.LearnTogether.content.domain.service.QuestionService;
 
 @RestController
@@ -42,6 +44,14 @@ public class QuestionController {
             @Valid @RequestBody AnswerCreateDTO answerDto ) {
 
         AnswerResponseDTO response = service.addAnswer(questionId, answerDto);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{questionId}/votes")
+    public ResponseEntity<VoteResponseDTO> addVoteToQuestion(
+            @PathVariable Long questionId,
+            @RequestBody @Valid VoteCreateDTO voteDto) {
+        VoteResponseDTO response = service.addVoteToQuestion(questionId, voteDto);
         return ResponseEntity.ok(response);
     }
 }
