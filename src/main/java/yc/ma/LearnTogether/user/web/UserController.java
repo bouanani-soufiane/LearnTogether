@@ -13,7 +13,7 @@ import yc.ma.LearnTogether.user.application.dto.response.UserResponseDTO;
 import yc.ma.LearnTogether.user.domain.service.impl.DefaultUserService;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 
 public class UserController {

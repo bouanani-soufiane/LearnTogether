@@ -77,6 +77,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         User user = findUserById(id);
         repository.delete(user);
