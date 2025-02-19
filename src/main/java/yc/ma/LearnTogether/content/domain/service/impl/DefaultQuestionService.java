@@ -3,11 +3,14 @@ package yc.ma.LearnTogether.content.domain.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import yc.ma.LearnTogether.common.application.PagedResult;
 import yc.ma.LearnTogether.content.application.dto.request.create.QuestionCreateDTO;
 import yc.ma.LearnTogether.content.application.dto.request.update.QuestionUpdateDTO;
 import yc.ma.LearnTogether.content.application.dto.response.QuestionResponseDTO;
@@ -27,6 +30,13 @@ public class DefaultQuestionService implements QuestionService {
     private final QuestionRepository repository;
     private final QuestionMapper mapper;
 
+
+    @Override
+    public PagedResult<QuestionResponseDTO> findQuestions (int pageNo , int pageSize){
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pageNo > 0 ? pageNo - 1 : 0, pageSize, sort);
+        return new PagedResult<>(repository.findAll(pageable).map(mapper::toResponseDto));
+    }
 
     @Override
     @Transactional

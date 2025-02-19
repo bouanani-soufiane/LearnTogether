@@ -3,8 +3,6 @@ package yc.ma.LearnTogether.content.domain.model;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table(name = "answers", schema = "content")
@@ -16,16 +14,16 @@ public class Answer {
     @Id
     private Long id;
     private Long userId;
-    private Long questionId;
     private String content;
 
-    @Embedded.Nullable
-    private AIValidationStatus aiValidationStatus;
+    private boolean isValid;
 
-    @Embedded.Nullable
-    private AnswerVote answerVote;
 
-//    @Transient
-//    @Setter
-//    private Question question;
+    public static Answer create ( Long userId, String content ) {
+        Answer answer = new Answer();
+        answer.userId = userId;
+        answer.content = content;
+        answer.isValid = false;
+        return answer;
+    }
 }

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import yc.ma.LearnTogether.common.application.PagedResult;
 import yc.ma.LearnTogether.content.application.dto.request.create.QuestionCreateDTO;
 import yc.ma.LearnTogether.content.application.dto.response.QuestionResponseDTO;
 import yc.ma.LearnTogether.content.domain.service.QuestionService;
@@ -22,6 +23,14 @@ public class QuestionController {
 
         QuestionResponseDTO newQuestion = service.create(question , userId);
         return ResponseEntity.ok(newQuestion);
+    }
+
+    @GetMapping()
+    public PagedResult<QuestionResponseDTO> findQuestions(
+            @RequestParam(name = "page", defaultValue = "1") int pageNo,
+            @RequestParam(name = "size", defaultValue = "10") int pageSize
+    ){
+      return service.findQuestions(pageNo,pageSize);
     }
 }
 
