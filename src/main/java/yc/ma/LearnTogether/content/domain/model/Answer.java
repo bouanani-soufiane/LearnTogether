@@ -3,6 +3,7 @@ package yc.ma.LearnTogether.content.domain.model;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table(name = "answers", schema = "content")
@@ -16,6 +17,7 @@ public class Answer {
     private Long userId;
     private String content;
 
+    @Column("is_valid")
     private boolean isValid;
 
 
