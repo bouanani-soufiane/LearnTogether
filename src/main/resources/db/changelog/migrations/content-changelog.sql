@@ -54,6 +54,18 @@ CREATE TABLE content.question_tags
     FOREIGN KEY (tag_id) REFERENCES content.tags (id) ON DELETE CASCADE
 );
 
+
+
+
+
+
+
+
+
+
+
+
+
 -- Create the 'blogs' table
 CREATE TABLE content.blogs
 (

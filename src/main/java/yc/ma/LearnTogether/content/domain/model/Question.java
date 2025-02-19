@@ -9,6 +9,9 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 import yc.ma.LearnTogether.user.domain.model.User;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Table(name = "questions", schema = "content")
@@ -17,20 +20,20 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__(@PersistenceCreator))
 public class Question {
-    @Id
-    private Long id;
-    private AggregateReference<User , Long> userId;
+    private @Id @With Long id;
+    private Long userId;
     private String title;
     private String content;
 
     @MappedCollection(idColumn = "question_id")
-    private Set<Answer> answers;
+    private Set<Answer> answers = new HashSet<>();
 
-    @Embedded.Nullable
-    private QuestionVote questionVote;
+    @MappedCollection(idColumn = "question_id")
+    private List<QuestionVote> questionVote = new ArrayList<>();
 
 
-    public static Question create(String title , String content ,AggregateReference<User , Long> userId ){
+
+    public static Question create(String title , String content ,Long userId ){
         Question question = new Question();
         question.title = title;
         question.content = content;
@@ -39,9 +42,6 @@ public class Question {
     }
 
 
-    public void addAnswer(Answer answer){
-        answers.add(answer);
-        answer.setQuestion(this);
-    }
+
 
 }

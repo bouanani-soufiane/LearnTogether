@@ -25,7 +25,7 @@ public class Answer {
     @Embedded.Nullable
     private AnswerVote answerVote;
 
-    @Transient
-    @Setter
-    private Question question;
+//    @Transient
+//    @Setter
+//    private Question question;
 }

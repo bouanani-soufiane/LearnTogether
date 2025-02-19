@@ -8,4 +8,5 @@ import yc.ma.LearnTogether.content.domain.model.Question;
 
 @Mapper(config = BaseMapper.class)
 public interface QuestionMapper extends BaseMapper<Question, QuestionCreateDTO, QuestionResponseDTO> {
+
 }
