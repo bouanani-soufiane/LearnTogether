@@ -26,7 +26,6 @@ import yc.ma.LearnTogether.content.domain.model.Vote;
 import yc.ma.LearnTogether.content.domain.repository.QuestionRepository;
 import yc.ma.LearnTogether.content.domain.service.QuestionService;
 
-
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -37,81 +36,47 @@ public class DefaultQuestionService implements QuestionService {
     private final AnswerMapper answerMapper;
     private final VoteMapper voteMapper;
 
-
     @Override
     public PagedResult<QuestionResponseDTO> findQuestions ( int pageNo, int pageSize ) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(pageNo > 0 ? pageNo - 1 : 0, pageSize, sort);
+        var pageable = PageRequest.of(Math.max(pageNo - 1, 0), pageSize, sort);
         return new PagedResult<>(repository.findAll(pageable).map(questionMapper::toResponseDto));
     }
 
     @Override
     @Transactional
-    public QuestionResponseDTO create ( QuestionCreateDTO dto, Long id ) {
-        Question question = Question.create(dto.title(), dto.content(), id);
-
+    public QuestionResponseDTO create ( QuestionCreateDTO dto, Long userId ) {
+        Question question = Question.create(dto.title(), dto.content(), userId);
         return questionMapper.toResponseDto(repository.save(question));
     }
 
     @Override
     @Transactional
-    public AnswerResponseDTO addAnswer ( Long questionId, AnswerCreateDTO answerDto ) {
+    public AnswerResponseDTO addAnswer ( Long questionId, AnswerCreateDTO dto ) {
         Question question = findQuestionById(questionId);
-        Answer answer = Answer.create(answerDto.userId(), answerDto.content());
-        question.addAnswer(answer);
+        Answer answer = question.addAnswer(dto.userId(), dto.content());
         repository.save(question);
-
         return answerMapper.toResponseDto(answer);
     }
 
     @Override
     @Transactional
-    public VoteResponseDTO addVoteToQuestion ( Long questionId, VoteCreateDTO voteDto ) {
+    public VoteResponseDTO addVoteToQuestion ( Long questionId, VoteCreateDTO dto ) {
         Question question = findQuestionById(questionId);
-
-        Vote vote = Vote.forQuestion(voteDto.userId(), questionId, voteDto.value());
-
-        question.getVotes().add(vote);
-
-        Question savedQuestion = repository.save(question);
-
-        Vote savedVote = savedQuestion.getVotes().stream()
-                .filter(v -> v.getUserId().equals(voteDto.userId()) && v.getValue() == voteDto.value())
-                .findFirst()
-                .orElse(vote);
-
-        return voteMapper.toResponseDto(savedVote);
+        Vote vote = question.addVoteToQuestion(dto.userId(), dto.value());
+        repository.save(question);
+        return voteMapper.toResponseDto(vote);
     }
-
 
     @Override
     @Transactional
-    public VoteResponseDTO addVoteToAnswer(Long answerId, VoteCreateDTO voteDto) {
-
+    public VoteResponseDTO addVoteToAnswer ( Long answerId, VoteCreateDTO dto ) {
         Question question = repository.findByAnswersId(answerId)
-                .orElseThrow(() -> new NotFoundException("Question" , answerId));
-
-
-        Vote vote = Vote.forAnswer(voteDto.userId(), answerId, voteDto.value());
-
-        question.addVoteToAnswer(answerId, vote);
-
-        Question savedQuestion = repository.save(question);
-
-        Answer answer = savedQuestion.getAnswers().stream()
-                .filter(a -> a.getId().equals(answerId))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException("Answer" ,answerId));
-
-        Vote savedVote = answer.getVotes().stream()
-                .filter(v -> v.getUserId().equals(voteDto.userId()) && v.getValue() == voteDto.value())
-                .findFirst()
-                .orElse(vote);
-
-        return voteMapper.toResponseDto(savedVote);
-
+                .orElseThrow(() -> new NotFoundException("Question containing answer", answerId));
+        Vote vote = question.addVoteToAnswer(answerId, dto.userId(), dto.value());
+        repository.save(question);
+        return voteMapper.toResponseDto(vote);
     }
-
 
     @Override
     public Page<QuestionResponseDTO> findAll ( Pageable pageable ) {
@@ -123,12 +88,10 @@ public class DefaultQuestionService implements QuestionService {
         return questionMapper.toResponseDto(findQuestionById(id));
     }
 
-
     @Override
     public QuestionResponseDTO create ( QuestionCreateDTO questionCreateDTO ) {
         return null;
     }
-
 
     @Override
     public QuestionResponseDTO update ( Long aLong, QuestionUpdateDTO questionUpdateDTO ) {
@@ -144,4 +107,6 @@ public class DefaultQuestionService implements QuestionService {
         return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Question", id));
     }
+
+
 }

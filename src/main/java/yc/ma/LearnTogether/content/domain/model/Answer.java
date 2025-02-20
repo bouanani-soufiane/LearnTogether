@@ -8,6 +8,7 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Table(name = "answers", schema = "content")
@@ -16,9 +17,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__(@PersistenceCreator))
 public class Answer {
-    @Id
-    private Long id;
+
+    private @Id Long id;
+
     private Long userId;
+
     private String content;
 
     @Column("is_valid")
@@ -27,12 +30,26 @@ public class Answer {
     @MappedCollection(idColumn = "answer_id")
     private Set<Vote> votes = new HashSet<>();
 
+    public static Answer create(Long userId, String content) {
+        Objects.requireNonNull(userId, "User ID must not be null");
+        Objects.requireNonNull(content, "Content must not be null");
+        return new Answer(null, userId, content, false, new HashSet<>());
+    }
 
-    public static Answer create ( Long userId, String content ) {
-        Answer answer = new Answer();
-        answer.userId = userId;
-        answer.content = content;
-        answer.isValid = false;
-        return answer;
+    public Vote addVote(Long userId, int value) {
+        validateVote(userId);
+        Vote vote = Vote.forAnswer(userId, this.id, value);
+        votes.add(vote);
+        return vote;
+    }
+    public void markAsValid() {
+        this.isValid = true;
+    }
+
+    private void validateVote(Long userId) {
+        Objects.requireNonNull(userId, "User ID must not be null");
+        if (votes.stream().anyMatch(v -> v.getUserId().equals(userId))) {
+            throw new IllegalStateException("User has already voted on this answer");
+        }
     }
 }

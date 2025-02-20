@@ -19,48 +19,38 @@ import yc.ma.LearnTogether.content.domain.service.QuestionService;
 public class QuestionController {
     private final QuestionService service;
 
-
-    @PostMapping("{userId}")
-    public ResponseEntity<QuestionResponseDTO> create (
-            @PathVariable long userId,
-            @Valid @RequestBody QuestionCreateDTO question ) {
-
-        QuestionResponseDTO newQuestion = service.create(question, userId);
-        return ResponseEntity.ok(newQuestion);
+    @PostMapping("/{userId}")
+    public ResponseEntity<QuestionResponseDTO> create(
+            @PathVariable Long userId,
+            @Valid @RequestBody QuestionCreateDTO question) {
+        return ResponseEntity.ok(service.create(question, userId));
     }
 
-    @GetMapping()
-    public PagedResult<QuestionResponseDTO> findQuestions (
+    @GetMapping
+    public PagedResult<QuestionResponseDTO> findQuestions(
             @RequestParam(name = "page", defaultValue = "1") int pageNo,
-            @RequestParam(name = "size", defaultValue = "10") int pageSize
-    ) {
+            @RequestParam(name = "size", defaultValue = "10") int pageSize) {
         return service.findQuestions(pageNo, pageSize);
     }
 
-
     @PostMapping("/{questionId}/answers")
-    public ResponseEntity<AnswerResponseDTO> addAnswer (
-            @PathVariable long questionId,
-            @Valid @RequestBody AnswerCreateDTO answerDto ) {
-
-        AnswerResponseDTO response = service.addAnswer(questionId, answerDto);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<AnswerResponseDTO> addAnswer(
+            @PathVariable Long questionId,
+            @Valid @RequestBody AnswerCreateDTO answerDto) {
+        return ResponseEntity.ok(service.addAnswer(questionId, answerDto));
     }
 
     @PostMapping("/{questionId}/votes")
     public ResponseEntity<VoteResponseDTO> addVoteToQuestion(
             @PathVariable Long questionId,
-            @RequestBody @Valid VoteCreateDTO voteDto) {
-        VoteResponseDTO response = service.addVoteToQuestion(questionId, voteDto);
-        return ResponseEntity.ok(response);
+            @Valid @RequestBody VoteCreateDTO voteDto) {
+        return ResponseEntity.ok(service.addVoteToQuestion(questionId, voteDto));
     }
 
     @PostMapping("/answers/{answerId}/votes")
     public ResponseEntity<VoteResponseDTO> addVoteToAnswer(
             @PathVariable Long answerId,
-            @RequestBody @Valid VoteCreateDTO voteDto) {
-        VoteResponseDTO response = service.addVoteToAnswer(answerId, voteDto);
-        return ResponseEntity.ok(response);
+            @Valid @RequestBody VoteCreateDTO voteDto) {
+        return ResponseEntity.ok(service.addVoteToAnswer(answerId, voteDto));
     }
 }
-
