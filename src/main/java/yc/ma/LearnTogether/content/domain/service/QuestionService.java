@@ -20,4 +20,6 @@ public interface QuestionService extends CrudService<Long, QuestionCreateDTO, Qu
 
     VoteResponseDTO addVoteToQuestion( Long questionId, VoteCreateDTO voteDto);
 
+    VoteResponseDTO addVoteToAnswer( Long questionId, VoteCreateDTO voteDto);
+
 }

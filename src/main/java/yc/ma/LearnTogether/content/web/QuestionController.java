@@ -54,5 +54,13 @@ public class QuestionController {
         VoteResponseDTO response = service.addVoteToQuestion(questionId, voteDto);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/answers/{answerId}/votes")
+    public ResponseEntity<VoteResponseDTO> addVoteToAnswer(
+            @PathVariable Long answerId,
+            @RequestBody @Valid VoteCreateDTO voteDto) {
+        VoteResponseDTO response = service.addVoteToAnswer(answerId, voteDto);
+        return ResponseEntity.ok(response);
+    }
 }
 

@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
+import yc.ma.LearnTogether.common.domain.exception.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,5 +40,14 @@ public class Question {
     public void addAnswer(Answer answer) {
         answers.add(answer);
     }
+
+    public void addVoteToAnswer(Long answerId, Vote vote) {
+        Answer answer = answers.stream()
+                .filter(a -> a.getId().equals(answerId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Answer" , answerId));
+        answer.getVotes().add(vote);
+    }
+
 
 }

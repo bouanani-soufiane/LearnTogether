@@ -38,7 +38,6 @@ public class DefaultQuestionService implements QuestionService {
     private final VoteMapper voteMapper;
 
 
-
     @Override
     public PagedResult<QuestionResponseDTO> findQuestions ( int pageNo, int pageSize ) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
@@ -67,7 +66,7 @@ public class DefaultQuestionService implements QuestionService {
 
     @Override
     @Transactional
-    public VoteResponseDTO addVoteToQuestion( Long questionId, VoteCreateDTO voteDto) {
+    public VoteResponseDTO addVoteToQuestion ( Long questionId, VoteCreateDTO voteDto ) {
         Question question = findQuestionById(questionId);
 
         Vote vote = Vote.forQuestion(voteDto.userId(), questionId, voteDto.value());
@@ -85,14 +84,33 @@ public class DefaultQuestionService implements QuestionService {
     }
 
 
+    @Override
+    @Transactional
+    public VoteResponseDTO addVoteToAnswer(Long answerId, VoteCreateDTO voteDto) {
+
+        Question question = repository.findByAnswersId(answerId)
+                .orElseThrow(() -> new NotFoundException("Question" , answerId));
 
 
+        Vote vote = Vote.forAnswer(voteDto.userId(), answerId, voteDto.value());
 
+        question.addVoteToAnswer(answerId, vote);
 
+        Question savedQuestion = repository.save(question);
 
+        Answer answer = savedQuestion.getAnswers().stream()
+                .filter(a -> a.getId().equals(answerId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Answer" ,answerId));
 
+        Vote savedVote = answer.getVotes().stream()
+                .filter(v -> v.getUserId().equals(voteDto.userId()) && v.getValue() == voteDto.value())
+                .findFirst()
+                .orElse(vote);
 
+        return voteMapper.toResponseDto(savedVote);
 
+    }
 
 
     @Override
