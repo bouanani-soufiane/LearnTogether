@@ -10,6 +10,7 @@ import yc.ma.LearnTogether.user.application.dto.request.create.ProfileCreateDTO;
 import yc.ma.LearnTogether.user.application.dto.request.create.UserRequestDTO;
 import yc.ma.LearnTogether.user.application.dto.request.update.UserUpdateDTO;
 import yc.ma.LearnTogether.user.application.dto.response.UserResponseDTO;
+import yc.ma.LearnTogether.user.domain.service.UserService;
 import yc.ma.LearnTogether.user.domain.service.impl.DefaultUserService;
 
 @RestController
@@ -18,7 +19,7 @@ import yc.ma.LearnTogether.user.domain.service.impl.DefaultUserService;
 
 public class UserController {
 
-    private final DefaultUserService userService;
+    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<UserResponseDTO> create ( @Valid @RequestBody UserRequestDTO user ) {

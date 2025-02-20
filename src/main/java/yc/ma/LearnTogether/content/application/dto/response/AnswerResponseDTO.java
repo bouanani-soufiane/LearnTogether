@@ -2,11 +2,11 @@ package yc.ma.LearnTogether.content.application.dto.response;
 
 import java.util.Set;
 
-public record QuestionResponseDTO(
+public record AnswerResponseDTO(
         Long id,
-        String title,
+        Long userId,
         String content,
-        Set<AnswerResponseDTO> answers,
+        boolean isValid,
         Set<VoteResponseDTO> votes
 ) {
 }
