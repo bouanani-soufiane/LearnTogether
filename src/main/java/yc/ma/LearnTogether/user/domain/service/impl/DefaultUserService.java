@@ -16,10 +16,10 @@ import yc.ma.LearnTogether.user.application.dto.request.update.UserUpdateDTO;
 import yc.ma.LearnTogether.user.application.dto.response.UserResponseDTO;
 import yc.ma.LearnTogether.user.application.mapper.ProfileMapper;
 import yc.ma.LearnTogether.user.application.mapper.UserMapper;
+import yc.ma.LearnTogether.user.domain.exception.BadRequestException;
 import yc.ma.LearnTogether.user.domain.model.User;
 import yc.ma.LearnTogether.user.domain.repository.UserRepository;
 import yc.ma.LearnTogether.user.domain.service.UserService;
-
 
 @Slf4j
 @Service
@@ -32,26 +32,29 @@ public class DefaultUserService implements UserService {
     private final ProfileMapper profileMapper;
 
     // => todo : use projection to avoid extra mapping here
-    public PagedResult<UserResponseDTO> findUsers ( int pageNo, int pageSize ) {
+    public PagedResult<UserResponseDTO> findUsers(int pageNo, int pageSize) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(pageNo > 0 ? pageNo - 1 : 0, pageSize, sort);
         return new PagedResult<>(repository.findAll(pageable).map(mapper::toResponseDto));
     }
 
     @Override
-    public UserResponseDTO findById ( Long id ) {
+    public UserResponseDTO findById(Long id) {
         return mapper.toResponseDto(findUserById(id));
     }
 
-    private User findUserById ( Long id ) {
+    private User findUserById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User", id));
     }
 
-
     @Override
     @Transactional
-    public UserResponseDTO create ( UserRequestDTO userDto ) {
+    public UserResponseDTO create(UserRequestDTO userDto) {
+        if (repository.findByEmail(userDto.email()).isPresent()) {
+            throw new BadRequestException("Email is already in use");
+        }
+
         User user = User.create(userDto.fullName(), userDto.email(), userDto.password(), userDto.role());
         User savedUser = repository.save(user);
 
@@ -61,7 +64,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Transactional
-    public UserResponseDTO updateUserProfile ( Long userId, ProfileCreateDTO profile ) {
+    public UserResponseDTO updateUserProfile(Long userId, ProfileCreateDTO profile) {
         User user = findUserById(userId);
         user.updateProfile(profileMapper.toEntity(profile));
         return mapper.toResponseDto(repository.save(user));
@@ -69,7 +72,7 @@ public class DefaultUserService implements UserService {
 
     @Override
     @Transactional
-    public UserResponseDTO update ( Long id, UserUpdateDTO userDto ) {
+    public UserResponseDTO update(Long id, UserUpdateDTO userDto) {
         User user = findUserById(id);
         user.updateDetails(userDto.fullName(), userDto.email(), userDto.password());
 
@@ -83,12 +86,9 @@ public class DefaultUserService implements UserService {
         repository.delete(user);
     }
 
-
-
     @Override
-    public Page<UserResponseDTO> findAll ( Pageable pageable ) {
+    public Page<UserResponseDTO> findAll(Pageable pageable) {
         Page<User> usersPage = repository.findAll(pageable);
         return usersPage.map(mapper::toResponseDto);
     }
-
 }

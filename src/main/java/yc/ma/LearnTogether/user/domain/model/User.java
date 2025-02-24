@@ -10,11 +10,12 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table(name = "users", schema = "youcoder")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__(@PersistenceCreator))
-@NoArgsConstructor()
 @ToString
+@NoArgsConstructor()
 public class User {
 
-    private @Id @With Long id;
+    private @Id
+    @With Long id;
 
     @Column("full_name")
     private String fullName;
@@ -49,7 +50,7 @@ public class User {
     }
 
 
-    public void updateProfile(Profile profile) {
+    public void updateProfile ( Profile profile ) {
         this.profile.update(profile);
     }
 
