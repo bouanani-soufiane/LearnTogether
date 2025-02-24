@@ -2,6 +2,7 @@ package yc.ma.LearnTogether.user.web;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,6 +42,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserRequestDTO registerRequest) {
-        return ResponseEntity.ok(authService.register(registerRequest));
+        UserResponseDTO createdUser = authService.register(registerRequest);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 }
