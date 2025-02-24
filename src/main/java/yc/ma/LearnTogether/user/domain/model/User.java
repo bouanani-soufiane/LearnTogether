@@ -1,17 +1,21 @@
 package yc.ma.LearnTogether.user.domain.model;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDate;
+
 @Table(name = "users", schema = "youcoder")
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__(@PersistenceCreator))
 @ToString
 @NoArgsConstructor()
+@Slf4j
 public class User {
 
     private @Id
@@ -50,8 +54,19 @@ public class User {
     }
 
 
-    public void updateProfile ( Profile profile ) {
-        this.profile.update(profile);
+    public void setProfileData(String bio, String location, String websiteLink, LocalDate birthdate) {
+        log.info("Setting profile data: bio={}, location={}, websiteLink={}, birthdate={}",
+                bio, location, websiteLink, birthdate);
+
+        Profile updatedProfile = new Profile(
+                this.profile.getUserId(),
+                bio,
+                location,
+                websiteLink,
+                birthdate,
+                this.profile.getJoinedAt()
+        );
+        this.profile = updatedProfile;
     }
 
 }

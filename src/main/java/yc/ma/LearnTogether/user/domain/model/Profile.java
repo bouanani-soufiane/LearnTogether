@@ -12,7 +12,7 @@ import java.time.LocalDate;
 
 @Table(name = "profiles", schema = "youcoder")
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__(@PersistenceCreator))
+@AllArgsConstructor( onConstructor = @__(@PersistenceCreator))
 @NoArgsConstructor
 public class Profile {
 
@@ -47,4 +47,6 @@ public class Profile {
         this.websiteLink = profile.getWebsiteLink();
         this.birthdate = profile.getBirthdate();
     }
+
+
 }

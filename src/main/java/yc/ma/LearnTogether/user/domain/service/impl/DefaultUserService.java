@@ -17,6 +17,7 @@ import yc.ma.LearnTogether.user.application.dto.response.UserResponseDTO;
 import yc.ma.LearnTogether.user.application.mapper.ProfileMapper;
 import yc.ma.LearnTogether.user.application.mapper.UserMapper;
 import yc.ma.LearnTogether.user.domain.exception.BadRequestException;
+import yc.ma.LearnTogether.user.domain.model.Profile;
 import yc.ma.LearnTogether.user.domain.model.User;
 import yc.ma.LearnTogether.user.domain.repository.UserRepository;
 import yc.ma.LearnTogether.user.domain.service.UserService;
@@ -64,9 +65,16 @@ public class DefaultUserService implements UserService {
     }
 
     @Transactional
-    public UserResponseDTO updateUserProfile(Long userId, ProfileCreateDTO profile) {
+    public UserResponseDTO updateUserProfile(Long userId, ProfileCreateDTO profileDTO) {
+        log.info("Updating profile for user ID {}: {}", userId, profileDTO);
         User user = findUserById(userId);
-        user.updateProfile(profileMapper.toEntity(profile));
+        user.setProfileData(
+                profileDTO.bio(),
+                profileDTO.location(),
+                profileDTO.websiteLink(),
+                profileDTO.birthdate()
+        );
+
         return mapper.toResponseDto(repository.save(user));
     }
 
