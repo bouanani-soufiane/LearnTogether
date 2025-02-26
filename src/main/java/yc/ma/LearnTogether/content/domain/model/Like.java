@@ -18,4 +18,9 @@ public class Like {
     private Long userId;
     private Long blogId;
     private LocalDateTime likedAt;
+
+    // Static factory method to create a new Like
+    public static Like create(Long userId, Long blogId) {
+        return new Like(null, userId, blogId, LocalDateTime.now());
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import yc.ma.LearnTogether.common.domain.exception.NotFoundException;
 import yc.ma.LearnTogether.common.domain.exception.UnauthorizedException;
 
 import java.time.LocalDateTime;
@@ -35,6 +36,17 @@ public class GlobalExceptionHandler {
                 "You don't have permission to perform this action"
         );
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                ENTITY_NOT_FOUND_MESSAGE,
+                ex.getMessage()
+                );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
 
