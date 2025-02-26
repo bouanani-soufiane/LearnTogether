@@ -3,6 +3,7 @@ package yc.ma.LearnTogether.content.domain.model;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 import yc.ma.LearnTogether.common.domain.exception.NotFoundException;
@@ -33,12 +34,43 @@ public class Question {
     @MappedCollection(idColumn = "question_id")
     private Set<Vote> votes = new HashSet<>();
 
+
+    @MappedCollection(idColumn = "question_id")
+    private Set<QuestionTagReference> tagReferences;
+
+    @Transient
+    private Set<Tag> tags;
+
+
     public static Question create(String title, String content, Long userId) {
         Objects.requireNonNull(title, "Title must not be null");
         Objects.requireNonNull(content, "Content must not be null");
         Objects.requireNonNull(userId, "User ID must not be null");
-        return new Question(null, userId, title, content, new HashSet<>(), new HashSet<>());
+        return new Question(null, userId, title, content, new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
     }
+
+    public void addTag(Tag tag) {
+        if (tag.getId() == null) {
+            throw new IllegalArgumentException("Tag must be persisted before adding to question");
+        }
+        this.tagReferences.add(QuestionTagReference.create(this.id, tag.getId()));
+        if (this.tags == null) {
+            this.tags = new HashSet<>();
+        }
+        this.tags.add(tag);
+    }
+
+    public void removeTag(Long tagId) {
+        this.tagReferences.removeIf(ref -> ref.getTagId().equals(tagId));
+        if (this.tags != null) {
+            this.tags.removeIf(tag -> tag.getId().equals(tagId));
+        }
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
 
     public Answer addAnswer ( Long userId, String content ) {
         Answer answer = Answer.create(userId, content);

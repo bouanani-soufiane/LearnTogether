@@ -10,8 +10,8 @@ CREATE TABLE content.questions
 (
     id      SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    title   TEXT NOT NULL,
-    content TEXT NOT NULL
+    title   TEXT    NOT NULL,
+    content TEXT    NOT NULL
 );
 
 -- Create the 'answers' table
@@ -20,7 +20,7 @@ CREATE TABLE content.answers
     id          SERIAL PRIMARY KEY,
     user_id     INTEGER NOT NULL,
     question_id INTEGER NOT NULL,
-    content     TEXT NOT NULL,
+    content     TEXT    NOT NULL,
     is_valid    BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (question_id) REFERENCES content.questions (id) ON DELETE CASCADE
 );
@@ -48,32 +48,22 @@ CREATE TABLE content.tags
 -- Create the 'question_tags' table for many-to-many relationship between questions and tags
 CREATE TABLE content.question_tags
 (
+    id      SERIAL PRIMARY KEY,
     question_id INTEGER NOT NULL,
     tag_id      INTEGER NOT NULL,
-    PRIMARY KEY (question_id, tag_id),
+    UNIQUE (question_id, tag_id),
     FOREIGN KEY (question_id) REFERENCES content.questions (id) ON DELETE CASCADE,
     FOREIGN KEY (tag_id) REFERENCES content.tags (id) ON DELETE CASCADE
 );
-
-
-
-
-
-
-
-
-
-
-
 
 
 -- Create the 'blogs' table
 CREATE TABLE content.blogs
 (
     id            SERIAL PRIMARY KEY,
-    user_id       INTEGER NOT NULL,
-    title         TEXT NOT NULL,
-    content       TEXT NOT NULL,
+    user_id       INTEGER                    NOT NULL,
+    title         TEXT                       NOT NULL,
+    content       TEXT                       NOT NULL,
     views         INTEGER DEFAULT 0,
     review_status content.review_status_enum NOT NULL,
     reviewed_at   DATE
@@ -82,9 +72,10 @@ CREATE TABLE content.blogs
 -- Create the 'blog_tags' table for many-to-many relationship between blogs and tags
 CREATE TABLE content.blog_tags
 (
+    id      SERIAL PRIMARY KEY,
     blog_id INTEGER NOT NULL,
     tag_id  INTEGER NOT NULL,
-    PRIMARY KEY (blog_id, tag_id),
+    UNIQUE (blog_id, tag_id),
     FOREIGN KEY (blog_id) REFERENCES content.blogs (id) ON DELETE CASCADE,
     FOREIGN KEY (tag_id) REFERENCES content.tags (id) ON DELETE CASCADE
 );
@@ -94,8 +85,8 @@ CREATE TABLE content.comments
 (
     id             SERIAL PRIMARY KEY,
     user_id        INTEGER NOT NULL,
-    content        TEXT NOT NULL,
-    reference_type TEXT NOT NULL CHECK (reference_type IN ('QUESTION', 'ANSWER', 'BLOG')),
+    content        TEXT    NOT NULL,
+    reference_type TEXT    NOT NULL CHECK (reference_type IN ('QUESTION', 'ANSWER', 'BLOG')),
     reference_id   INTEGER NOT NULL
 );
 
