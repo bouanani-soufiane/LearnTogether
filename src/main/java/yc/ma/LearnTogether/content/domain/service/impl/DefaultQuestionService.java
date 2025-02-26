@@ -71,8 +71,7 @@ public class DefaultQuestionService implements QuestionService {
     @Override
     @Transactional
     public VoteResponseDTO addVoteToAnswer ( Long answerId, VoteCreateDTO dto ) {
-        Question question = repository.findByAnswersId(answerId)
-                .orElseThrow(() -> new NotFoundException("Question containing answer", answerId));
+        Question question = getQuestionByAnswerId(answerId);
         Vote vote = question.addVoteToAnswer(answerId, dto.userId(), dto.value());
         repository.save(question);
         return voteMapper.toResponseDto(vote);
@@ -94,14 +93,43 @@ public class DefaultQuestionService implements QuestionService {
     }
 
     @Override
-    public QuestionResponseDTO update ( Long aLong, QuestionUpdateDTO questionUpdateDTO ) {
-        return null;
+    @Transactional
+    public QuestionResponseDTO update ( Long id, QuestionUpdateDTO updateDTO ) {
+        Question question = findQuestionById(id);
+        question.updateDetails(updateDTO.title(), updateDTO.content());
+        return questionMapper.toResponseDto(repository.save(question));
     }
+
 
     @Override
-    public void delete ( Long aLong ) {
-
+    @Transactional
+    public void delete ( Long id ) {
+        Question question = findQuestionById(id);
+        repository.delete(question);
     }
+
+
+    @Override
+    @Transactional
+    public AnswerResponseDTO markAnswerAsValid(Long answerId) {
+        Question question = getQuestionByAnswerId(answerId);
+
+        Answer answer = question.getAnswers().stream()
+                .filter(a -> a.getId().equals(answerId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Answer", answerId));
+
+        answer.markAsValid();
+        repository.save(question);
+
+        return answerMapper.toResponseDto(answer);
+    }
+
+    private Question getQuestionByAnswerId ( Long answerId ) {
+        return repository.findByAnswersId(answerId)
+                .orElseThrow(() -> new NotFoundException("Question containing answer", answerId));
+    }
+
 
     private Question findQuestionById ( Long id ) {
         return repository.findById(id)

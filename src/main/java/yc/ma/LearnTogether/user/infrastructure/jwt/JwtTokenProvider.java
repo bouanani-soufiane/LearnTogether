@@ -73,7 +73,7 @@ public class JwtTokenProvider {
         return false;
     }
 
-    public UsernamePasswordAuthenticationToken getAuthentication ( String token ) {
+    public UsernamePasswordAuthenticationToken getAuthentication(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(getSigningKey())
                 .build()
@@ -81,13 +81,22 @@ public class JwtTokenProvider {
                 .getBody();
 
         String username = claims.getSubject();
+        Long userId = claims.get("id", Long.class);
 
         Collection<? extends GrantedAuthority> authorities = Arrays
                 .stream(claims.get("roles").toString().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        return new UsernamePasswordAuthenticationToken(username, null, authorities);
+        UserDetailsImpl userDetails = new UserDetailsImpl(
+                userId,
+                username,
+                "",
+                authorities,
+                true
+        );
+
+        return new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
     }
 
     public String getUsernameFromToken(String token) {

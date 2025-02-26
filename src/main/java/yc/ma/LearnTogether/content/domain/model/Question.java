@@ -67,4 +67,13 @@ public class Question {
             throw new IllegalStateException("User has already voted on this " + target);
         }
     }
+
+    public void updateDetails(String title, String content) {
+        if (title != null) {
+            this.title = title;
+        }
+        if (content != null) {
+            this.content = content;
+        }
+    }
 }

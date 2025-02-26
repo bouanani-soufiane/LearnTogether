@@ -22,4 +22,7 @@ public interface QuestionService extends CrudService<Long, QuestionCreateDTO, Qu
 
     VoteResponseDTO addVoteToAnswer( Long questionId, VoteCreateDTO voteDto);
 
+    AnswerResponseDTO markAnswerAsValid(Long answerId);
+
+
 }
