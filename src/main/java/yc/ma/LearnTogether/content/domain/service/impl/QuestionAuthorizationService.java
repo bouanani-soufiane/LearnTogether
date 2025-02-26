@@ -38,7 +38,6 @@ public class QuestionAuthorizationService {
 
     }
 
-
     public boolean canMarkAnswerAsValid(Long answerId) {
         Long currentUserId = securityUtils.getCurrentUserId();
 
