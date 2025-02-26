@@ -1,9 +1,10 @@
 -- Set the search path to the 'content' schema
 SET search_path TO content;
+-- Create the enum type
+CREATE TYPE content.review_status_enum AS ENUM ('APPROVED', 'REJECTED', 'PENDING');
 
--- Create ENUM type for review status
-CREATE TYPE review_status_enum AS ENUM ('APPROVED', 'REJECTED', 'PENDING');
-
+-- Set up implicit casting
+CREATE CAST (varchar AS content.review_status_enum) WITH INOUT AS IMPLICIT;
 -- Create the 'questions' table
 CREATE TABLE content.questions
 (
@@ -74,7 +75,7 @@ CREATE TABLE content.blogs
     title         TEXT NOT NULL,
     content       TEXT NOT NULL,
     views         INTEGER DEFAULT 0,
-    review_status review_status_enum NOT NULL,
+    review_status content.review_status_enum NOT NULL,
     reviewed_at   DATE
 );
 
