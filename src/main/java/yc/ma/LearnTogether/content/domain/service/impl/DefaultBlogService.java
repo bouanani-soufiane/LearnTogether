@@ -17,95 +17,110 @@ import yc.ma.LearnTogether.content.application.dto.response.BlogSummaryDTO;
 import yc.ma.LearnTogether.content.application.mapper.BlogMapper;
 import yc.ma.LearnTogether.content.domain.model.Blog;
 import yc.ma.LearnTogether.content.domain.model.ReviewStatus;
+import yc.ma.LearnTogether.content.domain.model.Tag;
 import yc.ma.LearnTogether.content.domain.repository.BlogRepository;
+import yc.ma.LearnTogether.content.domain.repository.TagRepository;
 import yc.ma.LearnTogether.content.domain.service.BlogService;
+import yc.ma.LearnTogether.content.domain.service.TagService;
 import yc.ma.LearnTogether.user.infrastructure.userdetails.UserDetailsImpl;
+
+import java.util.Set;
 
 @Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class DefaultBlogService implements BlogService {
-
     private final BlogRepository blogRepository;
+    private final TagRepository tagRepository;
     private final BlogMapper blogMapper;
     private final SecurityUtils securityUtils;
+    private final TagService tagService;
 
     @Override
-    public BlogResponseDTO findById ( Long id ) {
-        Blog blog = getBlogById(id);
-        return blogMapper.toResponseDto(blog);
+    public BlogResponseDTO findById(Long id) {
+        return blogMapper.toResponseDto(getBlogWithTags(id));
     }
 
     @Override
-    public PagedResult<BlogSummaryDTO> findAllBlogs ( int pageNo, int pageSize ) {
+    public PagedResult<BlogSummaryDTO> findAllBlogs(int pageNo, int pageSize) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         var pageable = PageRequest.of(Math.max(pageNo - 1, 0), pageSize, sort);
-        return new PagedResult<>(blogRepository.findAll(pageable).map(blogMapper::toSummaryDto));
+        var blogPage = blogRepository.findAll(pageable);
+
+        blogPage.forEach(blog -> blog.setTags(tagRepository.findByBlogId(blog.getId())));
+
+        return new PagedResult<>(blogPage.map(blogMapper::toSummaryDto));
     }
 
     @Override
-    public PagedResult<BlogSummaryDTO> findBlogsByUserId ( Long userId, int pageNo, int pageSize ) {
+    public PagedResult<BlogSummaryDTO> findBlogsByUserId(Long userId, int pageNo, int pageSize) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         var pageable = PageRequest.of(Math.max(pageNo - 1, 0), pageSize, sort);
-        return new PagedResult<>(blogRepository.findByUserId(userId, pageable).map(blogMapper::toSummaryDto));
+        var blogPage = blogRepository.findByUserId(userId, pageable);
+
+        blogPage.forEach(blog -> blog.setTags(tagRepository.findByBlogId(blog.getId())));
+
+        return new PagedResult<>(blogPage.map(blogMapper::toSummaryDto));
     }
 
     @Override
     @Transactional
-    public BlogResponseDTO createBlog ( CreateBlogRequest request ) {
+    public BlogResponseDTO createBlog(CreateBlogRequest request) {
         Long currentUserId = securityUtils.getCurrentUserId();
 
-        Blog blog = Blog.create(
-                currentUserId,
-                request.title(),
-                request.content()
-        );
-
+        Blog blog = Blog.create(currentUserId, request.title(), request.content());
         Blog savedBlog = blogRepository.save(blog);
         log.info("Blog created: {}", savedBlog.getId());
 
-        return blogMapper.toResponseDto(savedBlog);
+        if (request.tagIds() != null && !request.tagIds().isEmpty()) {
+            tagService.addTagsToBlog(savedBlog.getId(), request.tagIds());
+        }
+
+        return blogMapper.toResponseDto(getBlogWithTags(savedBlog.getId()));
     }
 
     @Override
     @Transactional
-    public BlogResponseDTO updateBlog ( Long id, UpdateBlogRequest request ) {
-        Blog blog = getBlogById(id);
+    public BlogResponseDTO updateBlog(Long id, UpdateBlogRequest request) {
+        Blog blog = getBlogWithTags(id);
         validateOwnership(blog);
 
         blog.update(request.title(), request.content());
         Blog updatedBlog = blogRepository.save(blog);
+
+        if (request.tagIds() != null) {
+            tagService.addTagsToBlog(id, request.tagIds());
+        }
+
         log.info("Blog updated: {}", updatedBlog.getId());
 
-        return blogMapper.toResponseDto(updatedBlog);
+        return blogMapper.toResponseDto(getBlogWithTags(id));
     }
 
     @Override
     @Transactional
-    public void deleteBlog ( Long id ) {
-        Blog blog = getBlogById(id);
+    public void deleteBlog(Long id) {
+        Blog blog = getBlogWithTags(id);
         validateOwnership(blog);
-
         blogRepository.delete(blog);
         log.info("Blog deleted: {}", id);
     }
 
     @Override
     @Transactional
-    public BlogResponseDTO incrementViews ( Long id ) {
-        Blog blog = getBlogById(id);
+    public BlogResponseDTO incrementViews(Long id) {
+        Blog blog = getBlogWithTags(id);
         blog.incrementViews();
         Blog updatedBlog = blogRepository.save(blog);
         log.debug("Blog views incremented: {}", id);
-
-        return blogMapper.toResponseDto(updatedBlog);
+        return blogMapper.toResponseDto(getBlogWithTags(updatedBlog.getId()));
     }
 
     @Override
     @Transactional
-    public BlogResponseDTO reviewBlog ( Long id, ReviewStatus status ) {
-        Blog blog = getBlogById(id);
+    public BlogResponseDTO reviewBlog(Long id, ReviewStatus status) {
+        Blog blog = getBlogWithTags(id);
         validateAdminRole();
 
         if (status == ReviewStatus.APPROVED) {
@@ -117,13 +132,13 @@ public class DefaultBlogService implements BlogService {
         Blog updatedBlog = blogRepository.save(blog);
         log.info("Blog reviewed: {}, status: {}", id, status);
 
-        return blogMapper.toResponseDto(updatedBlog);
+        return blogMapper.toResponseDto(getBlogWithTags(updatedBlog.getId()));
     }
 
     @Override
     @Transactional
-    public BlogResponseDTO likeBlog ( Long id ) {
-        Blog blog = getBlogById(id);
+    public BlogResponseDTO likeBlog(Long id) {
+        Blog blog = getBlogWithTags(id);
         Long currentUserId = securityUtils.getCurrentUserId();
 
         if (!blog.isLikedBy(currentUserId)) {
@@ -132,13 +147,13 @@ public class DefaultBlogService implements BlogService {
             log.debug("Blog liked: {} by user: {}", id, currentUserId);
         }
 
-        return blogMapper.toResponseDto(blog);
+        return blogMapper.toResponseDto(getBlogWithTags(blog.getId()));
     }
 
     @Override
     @Transactional
-    public BlogResponseDTO unlikeBlog ( Long id ) {
-        Blog blog = getBlogById(id);
+    public BlogResponseDTO unlikeBlog(Long id) {
+        Blog blog = getBlogWithTags(id);
         Long currentUserId = securityUtils.getCurrentUserId();
 
         if (blog.isLikedBy(currentUserId)) {
@@ -147,23 +162,27 @@ public class DefaultBlogService implements BlogService {
             log.debug("Blog unliked: {} by user: {}", id, currentUserId);
         }
 
-        return blogMapper.toResponseDto(blog);
+        return blogMapper.toResponseDto(getBlogWithTags(blog.getId()));
     }
 
+    private Blog getBlogWithTags(Long id) {
+        Blog blog = blogRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Blog", id));
 
-    private Blog getBlogById ( Long id ) {
-        return blogRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Blog" ,id));
+        Set<Tag> tags = tagRepository.findByBlogId(id);
+        blog.setTags(tags);
+
+        return blog;
     }
 
-    private void validateOwnership ( Blog blog ) {
+    private void validateOwnership(Blog blog) {
         Long currentUserId = securityUtils.getCurrentUserId();
         if (!blog.getUserId().equals(currentUserId) && !isAdmin()) {
             throw new AccessDeniedException("You don't have permission to modify this blog");
         }
     }
 
-    private boolean isAdmin () {
+    private boolean isAdmin() {
         try {
             UserDetailsImpl currentUser = securityUtils.getCurrentUser();
             return currentUser.getAuthorities().stream()
@@ -173,7 +192,7 @@ public class DefaultBlogService implements BlogService {
         }
     }
 
-    private void validateAdminRole () {
+    private void validateAdminRole() {
         if (!isAdmin()) {
             throw new AccessDeniedException("Only administrators can review blogs");
         }

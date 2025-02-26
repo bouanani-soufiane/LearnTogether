@@ -22,9 +22,14 @@ import yc.ma.LearnTogether.content.application.mapper.QuestionMapper;
 import yc.ma.LearnTogether.content.application.mapper.VoteMapper;
 import yc.ma.LearnTogether.content.domain.model.Answer;
 import yc.ma.LearnTogether.content.domain.model.Question;
+import yc.ma.LearnTogether.content.domain.model.Tag;
 import yc.ma.LearnTogether.content.domain.model.Vote;
 import yc.ma.LearnTogether.content.domain.repository.QuestionRepository;
+import yc.ma.LearnTogether.content.domain.repository.TagRepository;
 import yc.ma.LearnTogether.content.domain.service.QuestionService;
+import yc.ma.LearnTogether.content.domain.service.TagService;
+
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -32,9 +37,11 @@ import yc.ma.LearnTogether.content.domain.service.QuestionService;
 @RequiredArgsConstructor
 public class DefaultQuestionService implements QuestionService {
     private final QuestionRepository repository;
+    private final TagRepository tagRepository;
     private final QuestionMapper questionMapper;
     private final AnswerMapper answerMapper;
     private final VoteMapper voteMapper;
+    private final TagService tagService;
 
     @Override
     public PagedResult<QuestionResponseDTO> findQuestions ( int pageNo, int pageSize ) {
@@ -47,7 +54,16 @@ public class DefaultQuestionService implements QuestionService {
     @Transactional
     public QuestionResponseDTO create ( QuestionCreateDTO dto, Long userId ) {
         Question question = Question.create(dto.title(), dto.content(), userId);
-        return questionMapper.toResponseDto(repository.save(question));
+        Question savedQuestion = repository.save(question);
+
+        if (dto.tagIds() != null && !dto.tagIds().isEmpty()) {
+            tagService.addTagsToQuestion(savedQuestion.getId(), dto.tagIds());
+
+            Set<Tag> tags = tagRepository.findByQuestionId(savedQuestion.getId());
+            savedQuestion.setTags(tags);
+        }
+
+        return questionMapper.toResponseDto(savedQuestion);
     }
 
     @Override
@@ -84,7 +100,8 @@ public class DefaultQuestionService implements QuestionService {
 
     @Override
     public QuestionResponseDTO findById ( Long id ) {
-        return questionMapper.toResponseDto(findQuestionById(id));
+        Question question = findQuestionById(id);
+        return questionMapper.toResponseDto(question);
     }
 
     @Override
@@ -97,7 +114,17 @@ public class DefaultQuestionService implements QuestionService {
     public QuestionResponseDTO update ( Long id, QuestionUpdateDTO updateDTO ) {
         Question question = findQuestionById(id);
         question.updateDetails(updateDTO.title(), updateDTO.content());
-        return questionMapper.toResponseDto(repository.save(question));
+
+        if (updateDTO.tagIds() != null) {
+            tagService.addTagsToQuestion(id, updateDTO.tagIds());
+        }
+
+        Question updatedQuestion = repository.save(question);
+
+        Set<Tag> tags = tagRepository.findByQuestionId(updatedQuestion.getId());
+        updatedQuestion.setTags(tags);
+
+        return questionMapper.toResponseDto(updatedQuestion);
     }
 
 
@@ -111,7 +138,7 @@ public class DefaultQuestionService implements QuestionService {
 
     @Override
     @Transactional
-    public AnswerResponseDTO markAnswerAsValid(Long answerId) {
+    public AnswerResponseDTO markAnswerAsValid ( Long answerId ) {
         Question question = getQuestionByAnswerId(answerId);
 
         Answer answer = question.getAnswers().stream()
@@ -132,8 +159,13 @@ public class DefaultQuestionService implements QuestionService {
 
 
     private Question findQuestionById ( Long id ) {
-        return repository.findById(id)
+        Question question = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Question", id));
+
+        Set<Tag> tags = tagRepository.findByQuestionId(id);
+        question.setTags(tags);
+
+        return question;
     }
 
 

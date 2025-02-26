@@ -17,6 +17,12 @@ spring:
   jdbc:
     template:
       query-timeout: 5
+    properties:
+      dialect: postgresql
+  data:
+    jdbc:
+      repositories:
+        enabled: true
 
 
 logging:

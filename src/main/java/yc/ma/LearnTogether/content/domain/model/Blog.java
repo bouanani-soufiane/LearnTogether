@@ -17,7 +17,6 @@ import java.util.Set;
 @Getter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__(@PersistenceCreator))
 public class Blog {
     @Id
     private Long id;
@@ -33,6 +32,29 @@ public class Blog {
     @MappedCollection(idColumn = "blog_id")
     private Set<Like> likes;
 
+    @MappedCollection(idColumn = "blog_id")
+    private Set<BlogTagReference> tagReferences;
+
+    @Transient
+    private Set<Tag> tags;
+
+
+    @PersistenceCreator
+    public Blog(Long id, Long userId, String title, String content, Integer views,
+                ReviewStatus reviewStatus, LocalDate reviewedAt, Set<Like> likes,
+                Set<BlogTagReference> tagReferences) {
+        this.id = id;
+        this.userId = userId;
+        this.title = title;
+        this.content = content;
+        this.views = views != null ? views : 0;
+        this.reviewStatus = reviewStatus;
+        this.reviewedAt = reviewedAt;
+        this.likes = likes != null ? likes : new HashSet<>();
+        this.tagReferences = tagReferences != null ? tagReferences : new HashSet<>();
+        this.tags = new HashSet<>();
+    }
+
     public static Blog create(Long userId, String title, String content) {
         Blog blog = new Blog();
         blog.userId = userId;
@@ -41,7 +63,31 @@ public class Blog {
         blog.views = 0;
         blog.reviewStatus = ReviewStatus.PENDING;
         blog.likes = new HashSet<>();
+        blog.tagReferences = new HashSet<>();
+        blog.tags = new HashSet<>();
         return blog;
+    }
+
+    public void addTag(Tag tag) {
+        if (tag.getId() == null) {
+            throw new IllegalArgumentException("Tag must be persisted before adding to blog");
+        }
+        this.tagReferences.add(BlogTagReference.create(this.id, tag.getId()));
+        if (this.tags == null) {
+            this.tags = new HashSet<>();
+        }
+        this.tags.add(tag);
+    }
+
+    public void removeTag(Long tagId) {
+        this.tagReferences.removeIf(ref -> ref.getTagId().equals(tagId));
+        if (this.tags != null) {
+            this.tags.removeIf(tag -> tag.getId().equals(tagId));
+        }
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 
     public void incrementViews() {
@@ -80,5 +126,8 @@ public class Blog {
     @Transient
     public boolean isLikedBy(Long userId) {
         return likes != null && likes.stream().anyMatch(like -> like.getUserId().equals(userId));
+    }
+    public void setTagReferences(Set<BlogTagReference> tagReferences) {
+        this.tagReferences = tagReferences;
     }
 }
