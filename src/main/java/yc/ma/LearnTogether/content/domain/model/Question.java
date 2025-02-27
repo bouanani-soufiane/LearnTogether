@@ -16,16 +16,12 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__(@PersistenceCreator))
 public class Question {
 
-    private @Id
-    @With Long id;
-
+    @Id
+    private Long id;
     private Long userId;
-
     private String title;
-
     private String content;
 
     @MappedCollection(idColumn = "question_id")
@@ -34,19 +30,32 @@ public class Question {
     @MappedCollection(idColumn = "question_id")
     private Set<Vote> votes = new HashSet<>();
 
-
     @MappedCollection(idColumn = "question_id")
-    private Set<QuestionTagReference> tagReferences;
+    private Set<QuestionTagReference> tagReferences = new HashSet<>();
 
     @Transient
-    private Set<Tag> tags;
+    private Set<Tag> tags = new HashSet<>();
 
+    @PersistenceCreator
+    public Question(Long id,
+                    Long userId,
+                    String title,
+                    String content,
+                    Set<Answer> answers,
+                    Set<Vote> votes,
+                    Set<QuestionTagReference> tagReferences) {
+        this.id = id;
+        this.userId = userId;
+        this.title = title;
+        this.content = content;
+        this.answers = answers != null ? answers : new HashSet<>();
+        this.votes = votes != null ? votes : new HashSet<>();
+        this.tagReferences = tagReferences != null ? tagReferences : new HashSet<>();
+        this.tags = new HashSet<>();
+    }
 
     public static Question create(String title, String content, Long userId) {
-        Objects.requireNonNull(title, "Title must not be null");
-        Objects.requireNonNull(content, "Content must not be null");
-        Objects.requireNonNull(userId, "User ID must not be null");
-        return new Question(null, userId, title, content, new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
+        return new Question(null, userId, title, content, new HashSet<>(), new HashSet<>(), new HashSet<>());
     }
 
     public void addTag(Tag tag) {
@@ -71,8 +80,11 @@ public class Question {
         this.tags = tags;
     }
 
+    public void setTagReferences(Set<QuestionTagReference> tagReferences) {
+        this.tagReferences = tagReferences;
+    }
 
-    public Answer addAnswer ( Long userId, String content ) {
+    public Answer addAnswer(Long userId, String content) {
         Answer answer = Answer.create(userId, content);
         answers.add(answer);
         return answer;

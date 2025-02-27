@@ -25,29 +25,29 @@ public class QuestionController {
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<QuestionResponseDTO> create(
-            @Valid @RequestBody QuestionCreateDTO question) {
+    public ResponseEntity<QuestionResponseDTO> create (
+            @Valid @RequestBody QuestionCreateDTO question ) {
         Long userId = securityUtils.getCurrentUserId();
         return ResponseEntity.ok(service.create(question, userId));
     }
+
     @GetMapping
-    public PagedResult<QuestionResponseDTO> findQuestions(
+    public PagedResult<QuestionResponseDTO> findQuestions (
             @RequestParam(name = "page", defaultValue = "1") int pageNo,
-            @RequestParam(name = "size", defaultValue = "10") int pageSize) {
+            @RequestParam(name = "size", defaultValue = "10") int pageSize ) {
         return service.findQuestions(pageNo, pageSize);
     }
 
     @GetMapping("/{questionId}")
-    public ResponseEntity<QuestionResponseDTO> findQuestionById(@PathVariable Long questionId) {
+    public ResponseEntity<QuestionResponseDTO> findQuestionById ( @PathVariable Long questionId ) {
         return ResponseEntity.ok(service.findById(questionId));
     }
 
-
     @PostMapping("/{questionId}/answers")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<AnswerResponseDTO> addAnswer(
+    public ResponseEntity<AnswerResponseDTO> addAnswer (
             @PathVariable Long questionId,
-            @Valid @RequestBody String content) {
+            @Valid @RequestBody String content ) {
         Long userId = securityUtils.getCurrentUserId();
         AnswerCreateDTO answerDto = new AnswerCreateDTO(userId, content);
         return ResponseEntity.ok(service.addAnswer(questionId, answerDto));
@@ -55,9 +55,9 @@ public class QuestionController {
 
     @PostMapping("/{questionId}/votes")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<VoteResponseDTO> addVoteToQuestion(
+    public ResponseEntity<VoteResponseDTO> addVoteToQuestion (
             @PathVariable Long questionId,
-            @Valid @RequestBody VoteCreateDTO voteCreateDTO) {
+            @Valid @RequestBody VoteCreateDTO voteCreateDTO ) {
         Long userId = securityUtils.getCurrentUserId();
         VoteCreateDTO voteDto = new VoteCreateDTO(userId, voteCreateDTO.value());
         return ResponseEntity.ok(service.addVoteToQuestion(questionId, voteDto));
@@ -65,9 +65,9 @@ public class QuestionController {
 
     @PostMapping("/answers/{answerId}/votes")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<VoteResponseDTO> addVoteToAnswer(
+    public ResponseEntity<VoteResponseDTO> addVoteToAnswer (
             @PathVariable Long answerId,
-            @Valid @RequestBody VoteCreateDTO voteCreateDTO) {
+            @Valid @RequestBody VoteCreateDTO voteCreateDTO ) {
         Long userId = securityUtils.getCurrentUserId();
         VoteCreateDTO voteDto = new VoteCreateDTO(userId, voteCreateDTO.value());
         return ResponseEntity.ok(service.addVoteToAnswer(answerId, voteDto));
@@ -75,21 +75,22 @@ public class QuestionController {
 
     @DeleteMapping("/{questionId}")
     @PreAuthorize("@questionAuthorizationService.canDeleteQuestion(#questionId)")
-    public ResponseEntity<Void> deleteQuestion(@PathVariable Long questionId) {
+    public ResponseEntity<Void> deleteQuestion ( @PathVariable Long questionId ) {
         service.delete(questionId);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{questionId}")
     @PreAuthorize("@questionAuthorizationService.canEditQuestion(#questionId)")
-    public ResponseEntity<QuestionResponseDTO> updateQuestion(
+    public ResponseEntity<QuestionResponseDTO> updateQuestion (
             @PathVariable Long questionId,
-            @Valid @RequestBody QuestionUpdateDTO questionUpdateDTO) {
+            @Valid @RequestBody QuestionUpdateDTO questionUpdateDTO ) {
         return ResponseEntity.ok(service.update(questionId, questionUpdateDTO));
     }
+
     @PatchMapping("/answers/{answerId}/mark-valid")
     @PreAuthorize("@questionAuthorizationService.canMarkAnswerAsValid(#answerId)")
-    public ResponseEntity<AnswerResponseDTO> markAnswerAsValid(@PathVariable Long answerId) {
+    public ResponseEntity<AnswerResponseDTO> markAnswerAsValid ( @PathVariable Long answerId ) {
         return ResponseEntity.ok(service.markAnswerAsValid(answerId));
     }
 }

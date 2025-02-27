@@ -13,8 +13,6 @@ public interface TagRepository extends CrudRepository<Tag, Long> {
 
     Optional<Tag> findByName(String name);
 
-    boolean existsByName(String name);
-
     List<Tag> findAllByOrderByNameAsc();
 
     @Query("SELECT t.* FROM content.tags t " +

@@ -6,7 +6,7 @@ public record AnswerResponseDTO(
         Long id,
         Long userId,
         String content,
-        boolean isValid,
+        boolean valid,
         Set<VoteResponseDTO> votes
 ) {
 }
