@@ -1,6 +1,6 @@
 # Ignore Maven build output directory
 target/
-
+.env
 # Ignore Maven wrapper JAR (but allow the wrapper scripts)
 !.mvn/wrapper/maven-wrapper.jar
 
