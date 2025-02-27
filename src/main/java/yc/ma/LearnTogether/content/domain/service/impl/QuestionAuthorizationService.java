@@ -38,7 +38,7 @@ public class QuestionAuthorizationService {
 
     }
 
-    public boolean canMarkAnswerAsValid(Long answerId) {
+    public boolean canMarkAnswerAsValid ( Long answerId ) {
         Long currentUserId = securityUtils.getCurrentUserId();
 
         return questionRepository.findByAnswersId(answerId)

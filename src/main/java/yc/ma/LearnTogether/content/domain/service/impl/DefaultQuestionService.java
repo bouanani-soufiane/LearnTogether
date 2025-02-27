@@ -44,21 +44,29 @@ public class DefaultQuestionService implements QuestionService {
     private final TagService tagService;
 
     @Override
-    public PagedResult<QuestionResponseDTO> findQuestions ( int pageNo, int pageSize ) {
+    public PagedResult<QuestionResponseDTO> findQuestions(int pageNo, int pageSize) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         var pageable = PageRequest.of(Math.max(pageNo - 1, 0), pageSize, sort);
-        return new PagedResult<>(repository.findAll(pageable).map(questionMapper::toResponseDto));
+        Page<Question> questionsPage = repository.findAll(pageable);
+
+        // Load tags for each question
+        questionsPage.forEach(question -> {
+            Set<Tag> tags = tagRepository.findByQuestionId(question.getId());
+            question.setTags(tags);
+        });
+
+        return new PagedResult<>(questionsPage.map(questionMapper::toResponseDto));
     }
 
     @Override
     @Transactional
-    public QuestionResponseDTO create ( QuestionCreateDTO dto, Long userId ) {
+    public QuestionResponseDTO create(QuestionCreateDTO dto, Long userId) {
         Question question = Question.create(dto.title(), dto.content(), userId);
         Question savedQuestion = repository.save(question);
+        log.info("Question created: {}", savedQuestion.getId());
 
         if (dto.tagIds() != null && !dto.tagIds().isEmpty()) {
             tagService.addTagsToQuestion(savedQuestion.getId(), dto.tagIds());
-
             Set<Tag> tags = tagRepository.findByQuestionId(savedQuestion.getId());
             savedQuestion.setTags(tags);
         }
@@ -111,7 +119,7 @@ public class DefaultQuestionService implements QuestionService {
 
     @Override
     @Transactional
-    public QuestionResponseDTO update ( Long id, QuestionUpdateDTO updateDTO ) {
+    public QuestionResponseDTO update(Long id, QuestionUpdateDTO updateDTO) {
         Question question = findQuestionById(id);
         question.updateDetails(updateDTO.title(), updateDTO.content());
 
@@ -120,6 +128,7 @@ public class DefaultQuestionService implements QuestionService {
         }
 
         Question updatedQuestion = repository.save(question);
+        log.info("Question updated: {}", updatedQuestion.getId());
 
         Set<Tag> tags = tagRepository.findByQuestionId(updatedQuestion.getId());
         updatedQuestion.setTags(tags);

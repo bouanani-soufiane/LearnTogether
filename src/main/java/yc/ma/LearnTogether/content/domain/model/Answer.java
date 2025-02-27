@@ -25,7 +25,7 @@ public class Answer {
     private String content;
 
     @Column("is_valid")
-    private boolean isValid;
+    private boolean valid;
 
     @MappedCollection(idColumn = "answer_id")
     private Set<Vote> votes = new HashSet<>();
@@ -43,7 +43,7 @@ public class Answer {
         return vote;
     }
     public void markAsValid() {
-        this.isValid = true;
+        this.valid = true;
     }
 
     private void validateVote(Long userId) {

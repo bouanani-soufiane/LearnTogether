@@ -9,7 +9,5 @@ public interface BlogTagReferenceRepository extends CrudRepository<BlogTagRefere
 
     Optional<BlogTagReference> findByBlogIdAndTagId(Long blogId, Long tagId);
 
-    void deleteAllByBlogId(Long blogId);
-
     void deleteAllByTagId(Long tagId);
 }
