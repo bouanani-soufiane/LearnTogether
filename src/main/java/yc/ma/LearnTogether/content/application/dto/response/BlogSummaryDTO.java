@@ -11,6 +11,8 @@ public record BlogSummaryDTO(
         Integer views,
         ReviewStatus reviewStatus,
         int likeCount,
-        Set<TagResponseDTO> tags
+        Set<TagResponseDTO> tags,
+        int commentCount
+
 ) {
 }

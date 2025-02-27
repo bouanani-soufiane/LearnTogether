@@ -15,7 +15,10 @@ public record BlogResponseDTO(
         LocalDate reviewedAt,
         int likeCount,
         boolean likedByCurrentUser,
-        Set<TagResponseDTO> tags
+        Set<CommentResponseDTO> comments,
+        Set<TagResponseDTO> tags,
+        int commentCount
+
 
 ) {
 }

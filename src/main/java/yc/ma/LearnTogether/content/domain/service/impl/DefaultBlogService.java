@@ -11,11 +11,15 @@ import yc.ma.LearnTogether.common.application.PagedResult;
 import yc.ma.LearnTogether.common.domain.exception.NotFoundException;
 import yc.ma.LearnTogether.common.infrastructure.security.SecurityUtils;
 import yc.ma.LearnTogether.content.application.dto.request.create.CreateBlogRequest;
+import yc.ma.LearnTogether.content.application.dto.request.create.CreateCommentRequest;
 import yc.ma.LearnTogether.content.application.dto.request.update.UpdateBlogRequest;
 import yc.ma.LearnTogether.content.application.dto.response.BlogResponseDTO;
 import yc.ma.LearnTogether.content.application.dto.response.BlogSummaryDTO;
+import yc.ma.LearnTogether.content.application.dto.response.CommentResponseDTO;
 import yc.ma.LearnTogether.content.application.mapper.BlogMapper;
+import yc.ma.LearnTogether.content.application.mapper.CommentMapper;
 import yc.ma.LearnTogether.content.domain.model.Blog;
+import yc.ma.LearnTogether.content.domain.model.Comment;
 import yc.ma.LearnTogether.content.domain.model.ReviewStatus;
 import yc.ma.LearnTogether.content.domain.model.Tag;
 import yc.ma.LearnTogether.content.domain.repository.BlogRepository;
@@ -36,6 +40,8 @@ public class DefaultBlogService implements BlogService {
     private final BlogMapper blogMapper;
     private final SecurityUtils securityUtils;
     private final TagService tagService;
+    private final CommentMapper commentMapper;
+
 
     @Override
     public BlogResponseDTO findById(Long id) {
@@ -163,6 +169,42 @@ public class DefaultBlogService implements BlogService {
         }
 
         return blogMapper.toResponseDto(getBlogWithTags(blog.getId()));
+    }
+
+    @Override
+    @Transactional
+    public CommentResponseDTO addComment(Long blogId, CreateCommentRequest request) {
+        Blog blog = getBlogWithTags(blogId);
+        Long currentUserId = securityUtils.getCurrentUserId();
+
+        Comment comment = blog.addComment(currentUserId, request.content());
+        Blog updatedBlog = blogRepository.save(blog);
+
+        // Find the newly created comment by matching the content
+        Comment savedComment = updatedBlog.getComments().stream()
+                .filter(c -> c.getContent().equals(request.content()) && c.getUserId().equals(currentUserId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Comment" , comment.getId()));
+
+        log.info("Comment added to blog: {}, comment id: {}", blogId, savedComment.getId());
+
+        return commentMapper.toResponseDto(savedComment);
+    }
+
+    @Override
+    @Transactional
+    public void deleteComment(Long blogId, Long commentId) {
+        Blog blog = getBlogWithTags(blogId);
+        Long currentUserId = securityUtils.getCurrentUserId();
+
+        boolean isRemoved = blog.removeComment(commentId, currentUserId);
+
+        if (!isRemoved && !isAdmin()) {
+            throw new AccessDeniedException("You don't have permission to delete this comment");
+        }
+
+        blogRepository.save(blog);
+        log.info("Comment deleted: {} from blog: {}", commentId, blogId);
     }
 
     private Blog getBlogWithTags(Long id) {

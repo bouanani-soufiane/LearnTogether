@@ -35,14 +35,19 @@ public class Blog {
     @MappedCollection(idColumn = "blog_id")
     private Set<BlogTagReference> tagReferences;
 
+    @MappedCollection(idColumn = "blog_id")
+    private Set<Comment> comments;
+
+
     @Transient
     private Set<Tag> tags;
+
 
 
     @PersistenceCreator
     public Blog(Long id, Long userId, String title, String content, Integer views,
                 ReviewStatus reviewStatus, LocalDate reviewedAt, Set<Like> likes,
-                Set<BlogTagReference> tagReferences) {
+                Set<BlogTagReference> tagReferences, Set<Comment> comments) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -52,8 +57,10 @@ public class Blog {
         this.reviewedAt = reviewedAt;
         this.likes = likes != null ? likes : new HashSet<>();
         this.tagReferences = tagReferences != null ? tagReferences : new HashSet<>();
+        this.comments = comments != null ? comments : new HashSet<>();
         this.tags = new HashSet<>();
     }
+
 
     public static Blog create(Long userId, String title, String content) {
         Blog blog = new Blog();
@@ -64,6 +71,7 @@ public class Blog {
         blog.reviewStatus = ReviewStatus.PENDING;
         blog.likes = new HashSet<>();
         blog.tagReferences = new HashSet<>();
+        blog.comments = new HashSet<>();
         blog.tags = new HashSet<>();
         return blog;
     }
@@ -118,9 +126,34 @@ public class Blog {
         this.likes.removeIf(like -> like.getUserId().equals(userId));
     }
 
+    public Comment addComment(Long userId, String content) {
+        Comment newComment = Comment.create(userId, content, this.id);
+        this.comments.add(newComment);
+        return newComment;
+    }
+
+    public boolean removeComment(Long commentId, Long userId) {
+        // Only allow comment removal by the comment author or blog owner
+        boolean isAuthorized = this.comments.stream()
+                .anyMatch(comment -> comment.getId().equals(commentId) &&
+                        (comment.getUserId().equals(userId) || this.userId.equals(userId)));
+
+        if (isAuthorized) {
+            this.comments.removeIf(comment -> comment.getId().equals(commentId));
+            return true;
+        }
+        return false;
+    }
+
+
     @Transient
     public int getLikeCount() {
         return likes != null ? likes.size() : 0;
+    }
+
+    @Transient
+    public int getCommentCount() {
+        return comments != null ? comments.size() : 0;
     }
 
     @Transient

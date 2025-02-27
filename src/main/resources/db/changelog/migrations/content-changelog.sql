@@ -86,8 +86,8 @@ CREATE TABLE content.comments
     id             SERIAL PRIMARY KEY,
     user_id        INTEGER NOT NULL,
     content        TEXT    NOT NULL,
-    reference_type TEXT    NOT NULL CHECK (reference_type IN ('QUESTION', 'ANSWER', 'BLOG')),
-    reference_id   INTEGER NOT NULL
+    blog_id  INTEGER NOT NULL,
+    FOREIGN KEY (blog_id) REFERENCES content.blogs (id) ON DELETE CASCADE
 );
 
 -- Create the 'likes' table
