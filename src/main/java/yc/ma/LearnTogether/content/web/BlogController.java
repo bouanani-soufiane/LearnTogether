@@ -1,5 +1,6 @@
 package yc.ma.LearnTogether.content.web;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,10 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import yc.ma.LearnTogether.common.application.PagedResult;
 import yc.ma.LearnTogether.common.infrastructure.security.SecurityUtils;
 import yc.ma.LearnTogether.content.application.dto.request.create.CreateBlogRequest;
+import yc.ma.LearnTogether.content.application.dto.request.create.CreateCommentRequest;
 import yc.ma.LearnTogether.content.application.dto.request.create.ReviewBlogRequest;
 import yc.ma.LearnTogether.content.application.dto.request.update.UpdateBlogRequest;
 import yc.ma.LearnTogether.content.application.dto.response.BlogResponseDTO;
 import yc.ma.LearnTogether.content.application.dto.response.BlogSummaryDTO;
+import yc.ma.LearnTogether.content.application.dto.response.CommentResponseDTO;
 import yc.ma.LearnTogether.content.domain.service.BlogService;
 
 @RestController
@@ -45,19 +48,19 @@ public class BlogController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BlogResponseDTO> findBlogById( @PathVariable Long id) {
+    public ResponseEntity<BlogResponseDTO> findBlogById(@PathVariable Long id) {
         return ResponseEntity.ok(service.incrementViews(id));
     }
 
     @PostMapping
-    public ResponseEntity<BlogResponseDTO> createBlog(@RequestBody CreateBlogRequest request) {
+    public ResponseEntity<BlogResponseDTO> createBlog(@Valid @RequestBody CreateBlogRequest request) {
         return new ResponseEntity<>(service.createBlog(request), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<BlogResponseDTO> updateBlog(
             @PathVariable Long id,
-            @RequestBody UpdateBlogRequest request) {
+            @Valid @RequestBody UpdateBlogRequest request) {
         return ResponseEntity.ok(service.updateBlog(id, request));
     }
 
@@ -70,7 +73,7 @@ public class BlogController {
     @PutMapping("/{id}/review")
     public ResponseEntity<BlogResponseDTO> reviewBlog(
             @PathVariable Long id,
-            @RequestBody ReviewBlogRequest request) {
+            @Valid @RequestBody ReviewBlogRequest request) {
         return ResponseEntity.ok(service.reviewBlog(id, request.status()));
     }
 
@@ -82,5 +85,21 @@ public class BlogController {
     @DeleteMapping("/{id}/likes")
     public ResponseEntity<BlogResponseDTO> unlikeBlog(@PathVariable Long id) {
         return ResponseEntity.ok(service.unlikeBlog(id));
+    }
+
+    // Comment endpoints
+    @PostMapping("/{blogId}/comments")
+    public ResponseEntity<CommentResponseDTO> addComment(
+            @PathVariable Long blogId,
+            @Valid @RequestBody CreateCommentRequest request) {
+        return new ResponseEntity<>(service.addComment(blogId, request), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{blogId}/comments/{commentId}")
+    public ResponseEntity<Void> deleteComment(
+            @PathVariable Long blogId,
+            @PathVariable Long commentId) {
+        service.deleteComment(blogId, commentId);
+        return ResponseEntity.noContent().build();
     }
 }
