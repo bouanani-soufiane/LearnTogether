@@ -1,0 +1,55 @@
+# Ignore Maven build output directory
+target/
+.env
+# Ignore Maven wrapper JAR (but allow the wrapper scripts)
+!.mvn/wrapper/maven-wrapper.jar
+
+### IDE ###
+# STS
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# IntelliJ IDEA 
+.idea/
+*.iws
+*.iml
+*.ipr
+*.orig
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# VS Code
+.vscode/
+
+### OS generated files ###
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+### Logs and temp files ###
+*.log
+*.tmp
+*.swp
+*.swo
+~$*
+
+### Dependency caching ###
+.pnp
+.pnp.js
+
+# Exclude testcontainers properties file (if generated)
+testcontainers.properties
