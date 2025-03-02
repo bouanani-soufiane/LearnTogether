@@ -1,0 +1,73 @@
+[
+    {
+      "name": "bitmex",
+      "volume": 563002.48,
+      "unit": "BTC"
+    },
+    {
+      "name": "binance",
+      "volume": 255264.57,
+      "unit": "BTC"
+    },
+    {
+      "name": "bitfinex",
+      "volume": 91176.9,
+      "unit": "BTC"
+    },
+    {
+      "name": "bitfinex",
+      "volume": 65567.85,
+      "unit": "ETH"
+    },
+    {
+      "name": "bithumb",
+      "volume": 61398.88,
+      "unit": "BTC"
+    },
+    {
+      "name": "bittrex",
+      "volume": 53515.81,
+      "unit": "BTC"
+    },
+    {
+      "name": "kraken",
+      "volume": 36561.0,
+      "unit": "BTC"
+    },
+    {
+      "name": "kraken",
+      "volume": 133264.76,
+      "unit": "ETH"
+    },
+    {
+      "name": "idex",
+      "volume": 59320.02,
+      "unit": "ETH"
+    },
+    {
+      "name": "gdax",
+      "volume": 33442.32,
+      "unit": "BTC"
+    },
+    {
+      "name": "hitbtc",
+      "volume": 30530.37,
+      "unit": "BTC"
+    },
+    {
+      "name": "bitstamp",
+      "volume": 21663.28,
+      "unit": "BTC"
+    },
+    {
+      "name": "quoinex",
+      "volume": 20826.33,
+      "unit": "BTC"
+    },
+    {
+      "name": "bitflyer",
+      "volume": 20734.96,
+      "unit": "BTC"
+    }
+  ]
+  
