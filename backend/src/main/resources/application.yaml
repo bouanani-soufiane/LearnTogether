@@ -1,4 +1,7 @@
 spring:
+  docker:
+    compose:
+      enabled: false
   application:
     name: LearnTogether
   datasource:
