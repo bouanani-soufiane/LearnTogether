@@ -1,19 +1,14 @@
-import { create } from 'zustand';
+import {create} from 'zustand';
 import {
-    getQuestions,
-    getQuestionById,
     addAnswer,
-    addVoteToQuestion,
     addVoteToAnswer,
-    markAnswerAsValid,
+    addVoteToQuestion,
     createQuestion,
-    QuestionsResponse,
-    QuestionResponseDTO,
-    QuestionCreateDTO,
-    AnswerResponseDTO,
-    VoteResponseDTO,
-    calculateVoteTotal
+    getQuestionById,
+    getQuestions,
+    markAnswerAsValid
 } from '../services/questionService';
+import {AnswerResponseDTO, QuestionCreateDTO, QuestionResponseDTO, QuestionsResponse} from "@/types";
 
 interface QuestionState {
     // Home page state
@@ -37,7 +32,7 @@ interface QuestionState {
     submitAnswerError: string | null;
 
     // Actions
-    fetchQuestions: (page?: number, sort?: string) => Promise<void>;
+    fetchQuestions: (page?: number, number: number, sort?: string) => Promise<void>;
     fetchQuestionById: (id: number) => Promise<void>;
     submitQuestion: (questionData: QuestionCreateDTO) => Promise<number | null>;
     submitAnswer: (questionId: number, content: string) => Promise<void>;
@@ -78,14 +73,13 @@ export const useQuestionStore = create<QuestionState>((set, get) => ({
         });
 
         try {
-            // Map UI sort options to API sort parameters
-            let sortParam = 'createdAt,desc'; // Default: newest
+            let sortParam = 'createdAt,desc';
             switch (sort) {
                 case 'newest':
                     sortParam = 'id,desc';
                     break;
                 case 'votes':
-                    sortParam = 'id,desc'; // This would need backend support
+                    sortParam = 'id,desc';
                     break;
             }
 
@@ -136,7 +130,6 @@ export const useQuestionStore = create<QuestionState>((set, get) => ({
         try {
             const answer = await addAnswer(questionId, content);
 
-            // Update the current question with the new answer
             const currentQuestion = get().currentQuestion;
             if (currentQuestion && currentQuestion.id === questionId) {
                 const updatedAnswers = [...(currentQuestion.answers || []), answer];

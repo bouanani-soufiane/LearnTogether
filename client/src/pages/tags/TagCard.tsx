@@ -1,3 +1,4 @@
+// src/pages/tags/TagCard.tsx
 import React from "react"
 import { Link } from "react-router-dom"
 import { Eye, EyeOff, Info } from 'lucide-react'
@@ -14,13 +15,13 @@ import {
 
 interface TagCardProps {
     tag: {
-        id: string
+        id: number
         name: string
-        description: string
-        count: number
-        isWatched: boolean
-        isIgnored: boolean
-        createdAt: string
+        description?: string
+        count?: number
+        isWatched?: boolean
+        isIgnored?: boolean
+        createdAt?: string
     }
     onWatch: () => void
     onIgnore: () => void
@@ -28,7 +29,7 @@ interface TagCardProps {
 
 export function TagCard({ tag, onWatch, onIgnore }: TagCardProps) {
     // Format the count with k, m for thousands and millions
-    const formatCount = (count: number) => {
+    const formatCount = (count: number = 0) => {
         if (count >= 1000000) {
             return `${(count / 1000000).toFixed(1)}m`
         } else if (count >= 1000) {
@@ -51,8 +52,8 @@ export function TagCard({ tag, onWatch, onIgnore }: TagCardProps) {
                                 {tag.name}
                             </Badge>
                             <span className="text-sm text-muted-foreground">
-                {formatCount(tag.count)} questions
-              </span>
+                                {formatCount(tag.count)} questions
+                            </span>
                         </Link>
 
                         <div className="flex gap-1">
@@ -103,7 +104,7 @@ export function TagCard({ tag, onWatch, onIgnore }: TagCardProps) {
                                             className="h-7 w-7 text-muted-foreground"
                                             asChild
                                         >
-                                            <Link to={`/tags/info/${tag.name}`}>
+                                            <Link to={`/tags/${tag.name}`}>
                                                 <Info className="h-4 w-4" />
                                                 <span className="sr-only">Tag info</span>
                                             </Link>
@@ -118,12 +119,12 @@ export function TagCard({ tag, onWatch, onIgnore }: TagCardProps) {
                     </div>
 
                     <p className="text-sm text-muted-foreground line-clamp-3 flex-grow">
-                        {tag.description}
+                        {tag.description || `Tag for ${tag.name} related questions.`}
                     </p>
 
                     <div className="mt-4 flex justify-between items-center">
                         <Link
-                            to={`/tags/${tag.name}/info`}
+                            to={`/tags/${tag.name}`}
                             className="text-xs text-blue-600 hover:text-blue-800"
                         >
                             Learn more

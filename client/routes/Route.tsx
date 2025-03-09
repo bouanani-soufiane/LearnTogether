@@ -9,6 +9,8 @@ import QuestionDetailPage from "@/pages/home/QuestionDetailPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import TagsPage from "@/pages/tags/TagsPage";
 import TagDetailPage from "@/pages/tags/TagDetailPage";
+import AdminUsersPage from "@/pages/profile/users";
+import LeaderboardPage from "@/pages/LeaderboardPage";
 
 const router = createBrowserRouter([
     {
@@ -40,8 +42,16 @@ const router = createBrowserRouter([
                 element: <AboutUs />
             },
             {
+                path: "/leaderboard",
+                element: <LeaderboardPage />
+            },
+            {
                 path: '/profile',
                 element: <ProfilePage />,
+            } ,
+            {
+                path: '/users',
+                element: <AdminUsersPage />,
             } ,
             {
                 path: "/tags",

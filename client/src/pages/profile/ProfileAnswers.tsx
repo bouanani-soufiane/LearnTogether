@@ -1,50 +1,132 @@
-import React from "react"
+// src/pages/profile/ProfileAnswers.tsx
+import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { ArrowUp, Check } from 'lucide-react'
+import { ArrowUp, Check, Loader2 } from 'lucide-react'
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { apiInstance } from "@/api"
+import { calculateVoteTotal } from "@/types/questionTypes"
 
-// Mock data for answers
-const answers = [
-    {
-        id: "1",
-        questionId: "101",
-        questionTitle: "How to implement server-side rendering with React?",
-        body: "Server-side rendering (SSR) can be implemented in React using frameworks like Next.js. Next.js provides built-in SSR capabilities that make it easy to render React components on the server...",
-        votes: 32,
-        isAccepted: true,
-        createdAt: "2023-12-10T11:23:00Z",
-        tags: ["react", "ssr", "next.js"]
-    },
-    {
-        id: "2",
-        questionId: "102",
-        questionTitle: "What's the difference between useMemo and useCallback in React?",
-        body: "The main difference between useMemo and useCallback is that useMemo returns a memoized value, while useCallback returns a memoized function. Use useMemo when you want to avoid expensive calculations on every render...",
-        votes: 27,
-        isAccepted: false,
-        createdAt: "2023-11-05T09:45:00Z",
-        tags: ["react", "hooks", "performance"]
-    },
-    {
-        id: "3",
-        questionId: "103",
-        questionTitle: "How to handle form validation in React?",
-        body: "For form validation in React, you can use libraries like Formik or React Hook Form. These libraries provide a way to manage form state, handle validation, and deal with form submission...",
-        votes: 19,
-        isAccepted: true,
-        createdAt: "2023-10-22T14:30:00Z",
-        tags: ["react", "forms", "validation"]
+interface UserAnswer {
+    id: number;
+    questionId: number;
+    questionTitle: string;
+    content: string;
+    votes: number;
+    isAccepted: boolean;
+    createdAt: string;
+    tags: string[];
+}
+
+interface ProfileAnswersProps {
+    userId: number;
+}
+
+export function ProfileAnswers({ userId }: ProfileAnswersProps) {
+    const [answers, setAnswers] = useState<UserAnswer[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchUserAnswers = async () => {
+            if (!userId) return;
+
+            setIsLoading(true);
+            setError(null);
+
+            try {
+                // Fetch user's answers
+                const answersResponse = await apiInstance.get(`/api/v1/users/${userId}/answers`);
+                const rawAnswers = answersResponse.data;
+
+                // Process each answer to get question details and transform data
+                const processedAnswers = await Promise.all(
+                    rawAnswers.map(async (answer: any) => {
+                        try {
+                            // Get question details for the answer
+                            const questionResponse = await apiInstance.get(`/api/v1/questions/${answer.questionId}`);
+                            const question = questionResponse.data;
+
+                            return {
+                                id: answer.id,
+                                questionId: answer.questionId,
+                                questionTitle: question.title,
+                                content: answer.content,
+                                votes: calculateVoteTotal(answer.votes),
+                                isAccepted: answer.valid,
+                                createdAt: answer.createdAt || new Date().toISOString(),
+                                tags: question.tags ? question.tags.map((tag: any) => tag.name) : []
+                            };
+                        } catch (err) {
+                            // If question fetch fails, return with partial data
+                            return {
+                                id: answer.id,
+                                questionId: answer.questionId,
+                                questionTitle: "Question unavailable",
+                                content: answer.content,
+                                votes: calculateVoteTotal(answer.votes),
+                                isAccepted: answer.valid,
+                                createdAt: answer.createdAt || new Date().toISOString(),
+                                tags: []
+                            };
+                        }
+                    })
+                );
+
+                setAnswers(processedAnswers);
+            } catch (err: any) {
+                console.error("Error fetching user answers:", err);
+                setError(err.message || "Failed to load answers");
+
+                // For development, use mock data when API fails
+                if (process.env.NODE_ENV !== 'production') {
+                    setAnswers([
+                        {
+                            id: 1,
+                            questionId: 101,
+                            questionTitle: "How to implement server-side rendering with React?",
+                            content: "Server-side rendering (SSR) can be implemented in React using frameworks like Next.js...",
+                            votes: 32,
+                            isAccepted: true,
+                            createdAt: new Date().toISOString(),
+                            tags: ["react", "ssr", "next.js"]
+                        }
+                    ]);
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchUserAnswers();
+    }, [userId]);
+
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center py-10">
+                <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
+                <span className="ml-2">Loading answers...</span>
+            </div>
+        );
     }
-]
 
-export function ProfileAnswers() {
+    if (error) {
+        return (
+            <Card>
+                <CardContent className="p-6 text-center">
+                    <p className="text-red-500 mb-2">Error loading answers</p>
+                    <p className="text-muted-foreground">{error}</p>
+                </CardContent>
+            </Card>
+        );
+    }
+
     return (
         <div className="space-y-4">
             <h2 className="text-xl font-semibold mb-6">Your Answers</h2>
 
-            {answers.length === 0 ? (
+            {(!answers || answers.length === 0) ? (
                 <Card>
                     <CardContent className="p-6 text-center">
                         <p className="text-muted-foreground">You haven't answered any questions yet.</p>
@@ -72,7 +154,7 @@ export function ProfileAnswers() {
                                     <Link to={`/questions/${answer.questionId}`} className="text-lg font-medium text-blue-600 hover:text-blue-800">
                                         {answer.questionTitle}
                                     </Link>
-                                    <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{answer.body}</p>
+                                    <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{answer.content}</p>
 
                                     <div className="mt-4 flex flex-wrap gap-2">
                                         {answer.tags.map((tag) => (

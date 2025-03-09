@@ -54,7 +54,12 @@ const QuestionDetailPage: React.FC = () => {
 
     const [questionUser, setQuestionUser] = useState<User | null>(null);
     const [answerUsers, setAnswerUsers] = useState<Map<number, User>>(new Map());
-
+// Convert both to strings for reliable comparison
+    const isQuestionAuthor = Boolean(
+        user &&
+        currentQuestion &&
+        String(user.id) === String(currentQuestion.userId)
+    );
     useEffect(() => {
         if (questionId > 0) {
             fetchQuestionById(questionId);
@@ -62,24 +67,21 @@ const QuestionDetailPage: React.FC = () => {
     }, [questionId, fetchQuestionById]);
 
     useEffect(() => {
-        if (currentQuestion) {
-            const fetchUsers = async () => {
-                const qUser = await fetchUserById(currentQuestion.userId);
-                setQuestionUser(qUser);
-
-                // Fetch answer users
-                const answerUsersMap = new Map<number, User>();
-                if (currentQuestion.answers && currentQuestion.answers.length > 0) {
-                    for (const answer of currentQuestion.answers) {
-                        answerUsersMap.set(answer.id, await fetchUserById(answer.userId));
-                    }
-                }
-                setAnswerUsers(answerUsersMap);
-            };
-
-            fetchUsers();
+        if (currentQuestion && user) {
+            console.log("User vs Question Author DEBUG:", {
+                user: {
+                    id: user.id,
+                    type: typeof user.id
+                },
+                question: {
+                    userId: currentQuestion.userId,
+                    type: typeof currentQuestion.userId
+                },
+                stringEquality: String(user.id) === String(currentQuestion.userId),
+                numberEquality: Number(user.id) === Number(currentQuestion.userId)
+            });
         }
-    }, [currentQuestion]);
+    }, [currentQuestion, user]);
 
     const handleQuestionVote = (voteType: "up" | "down" | "none") => {
         voteOnQuestion(questionId, voteType);
@@ -147,7 +149,7 @@ const QuestionDetailPage: React.FC = () => {
         );
     }
 
-    const isQuestionAuthor = Boolean(user && currentQuestion.userId === user.id);
+
     const answerCount = currentQuestion.answers ? currentQuestion.answers.length : 0;
     const createdAt = currentQuestion.createdAt || new Date().toISOString();
     const viewCount = currentQuestion.viewCount || Math.floor(Math.random() * 100) + 10;
@@ -203,7 +205,11 @@ const QuestionDetailPage: React.FC = () => {
                             </div>
 
                             <div className="flex-1">
-                                <EnhancedContent htmlContent={contentString} />
+                                <EnhancedContent
+                                    htmlContent={contentString}
+                                    contentType="code"
+                                    language="java"
+                                />
 
                                 <div className="mt-4 flex flex-wrap gap-2">
                                     {currentQuestion.tags &&
@@ -255,6 +261,7 @@ const QuestionDetailPage: React.FC = () => {
 
                             {currentQuestion.answers && currentQuestion.answers.length > 0 ? (
                                 <div>
+
                                     {currentQuestion.answers.map((answer: any) => {
                                         const answerUser = answerUsers.get(answer.id);
                                         return (

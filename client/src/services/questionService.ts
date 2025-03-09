@@ -1,63 +1,5 @@
+import {AnswerResponseDTO, QuestionCreateDTO, QuestionResponseDTO, QuestionsResponse, VoteResponseDTO} from '@/types';
 import { apiInstance } from '../api';
-
-export interface TagResponseDTO {
-    id: number;
-    name: string;
-}
-
-export interface VoteResponseDTO {
-    id: number;
-    userId: number;
-    value: number;
-}
-
-export interface AnswerResponseDTO {
-    id: number;
-    userId: number;
-    content: string;
-    valid: boolean;
-    votes: VoteResponseDTO[];
-}
-
-export interface QuestionResponseDTO {
-    id: number;
-    userId: number;
-    title: string;
-    content: string;
-    answers: AnswerResponseDTO[];
-    votes: VoteResponseDTO[];
-    tags: TagResponseDTO[];
-    // Frontend needs these fields and i will later make them in the response coming from backend
-    createdAt?: string;
-    viewCount?: number;
-}
-
-export interface PagedResult<T> {
-    data: T[];
-    totalElements: number;
-    pageNumber: number;
-    totalPages: number;
-    isFirst: boolean;
-    isLast: boolean;
-    hasNext: boolean;
-    hasPrevious: boolean;
-}
-
-export type QuestionsResponse = PagedResult<QuestionResponseDTO>;
-
-export interface QuestionCreateDTO {
-    title: string;
-    content: string;
-    tagIds?: number[];
-}
-
-export interface AnswerCreateDTO {
-    content: string;
-}
-
-export interface VoteCreateDTO {
-    value: number;
-}
 
 export const getQuestions = async (
     page = 1,
@@ -133,9 +75,11 @@ export const addAnswer = async (questionId: number, content: string): Promise<An
     try {
         console.log(`Adding answer to question ${questionId}`);
 
+        const answerData = { content };
+
         const response = await apiInstance.post<AnswerResponseDTO>(
             `/api/v1/questions/${questionId}/answers`,
-            { content },
+            JSON.stringify(answerData),
             {
                 headers: {
                     'Content-Type': 'application/json'
@@ -186,36 +130,52 @@ export const addVoteToAnswer = async (answerId: number, value: number): Promise<
     }
 };
 
+
+
+
 export const markAnswerAsValid = async (answerId: number): Promise<AnswerResponseDTO> => {
     try {
         console.log(`Attempting to mark answer ${answerId} as valid`);
 
+        // Explicitly log the auth token (sanitized)
         const authStorage = localStorage.getItem('auth-storage');
         if (authStorage) {
             const parsed = JSON.parse(authStorage);
-            console.log("Auth state:", {
-                isAuthenticated: parsed.state?.isAuthenticated,
-                hasToken: !!parsed.state?.token,
-                userId: parsed.state?.user?.id
-            });
-        } else {
-            console.warn("No auth storage found!");
+            const token = parsed.state?.token;
+            console.log("Auth token present:", !!token);
+            if (token) {
+                const tokenPreview = token.substring(0, 10) + '...';
+                console.log("Token preview:", tokenPreview);
+            }
         }
 
-        console.log("Request URL:", `/api/v1/questions/answers/${answerId}/mark-valid`);
+        // Explicitly add the authorization header for this request
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+
+        if (authStorage) {
+            const parsed = JSON.parse(authStorage);
+            if (parsed.state?.token) {
+                // @ts-ignore
+                headers['Authorization'] = `Bearer ${parsed.state.token}`;
+            }
+        }
 
         const response = await apiInstance.patch<AnswerResponseDTO>(
-            `/api/v1/questions/answers/${answerId}/mark-valid`
+            `/api/v1/questions/answers/${answerId}/mark-valid`,
+            {},  // Add empty body
+            { headers }
         );
 
         console.log("Mark as valid SUCCESS response:", response.data);
         return response.data;
     } catch (error) {
         console.error(`Error marking answer ${answerId} as valid:`, error);
-
         throw error;
     }
 };
+
 
 export const calculateVoteTotal = (votes: VoteResponseDTO[]): number => {
     if (!votes || !Array.isArray(votes)) return 0;

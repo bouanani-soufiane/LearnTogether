@@ -5,13 +5,15 @@ export interface Tag {
     id: number;
     name: string;
     description?: string;
-    count?: number; // How many questions use this tag
+    count?: number;
+    isWatched?: boolean;
+    isIgnored?: boolean;
+    createdAt?: string;
 }
 
-// Get all tags
-export const getAllTags = async () => {
+export const getAllTags = async (): Promise<Tag[]> => {
     try {
-        const response = await apiInstance.get<Tag[]>('/tags');
+        const response = await apiInstance.get<Tag[]>('/api/v1/tags');
         return response.data;
     } catch (error) {
         console.error('Error fetching tags:', error);
@@ -19,11 +21,20 @@ export const getAllTags = async () => {
     }
 };
 
-// Search tags by name
-export const searchTags = async (query: string) => {
+export const getTagById = async (id: number): Promise<Tag> => {
     try {
-        const response = await apiInstance.get<Tag[]>('/tags/search', {
-            params: { q: query }
+        const response = await apiInstance.get<Tag>(`/api/v1/tags/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching tag with ID ${id}:`, error);
+        throw error;
+    }
+};
+
+export const searchTags = async (query: string, limit: number = 10): Promise<Tag[]> => {
+    try {
+        const response = await apiInstance.get<Tag[]>('/api/v1/tags/search', {
+            params: { query, limit }
         });
         return response.data;
     } catch (error) {
@@ -32,27 +43,12 @@ export const searchTags = async (query: string) => {
     }
 };
 
-// Get popular tags
-export const getPopularTags = async (limit: number = 10) => {
+export const createTag = async (name: string): Promise<Tag> => {
     try {
-        const response = await apiInstance.get<Tag[]>('/tags/popular', {
-            params: { limit }
-        });
+        const response = await apiInstance.post<Tag>('/api/v1/tags', { name });
         return response.data;
     } catch (error) {
-        console.error('Error fetching popular tags:', error);
-        // Return mock data as fallback if API isn't implemented yet
-        return [
-            { id: 1, name: 'java', count: 1254 },
-            { id: 2, name: 'spring', count: 943 },
-            { id: 3, name: 'react', count: 782 },
-            { id: 4, name: 'javascript', count: 651 },
-            { id: 5, name: 'typescript', count: 512 },
-            { id: 6, name: 'sql', count: 487 },
-            { id: 7, name: 'database', count: 423 },
-            { id: 8, name: 'hibernate', count: 386 },
-            { id: 9, name: 'jpa', count: 342 },
-            { id: 10, name: 'spring-boot', count: 315 }
-        ];
+        console.error('Error creating tag:', error);
+        throw error;
     }
 };

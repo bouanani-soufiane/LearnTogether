@@ -16,16 +16,16 @@ const Home: React.FC = () => {
     } = useQuestionStore();
 
     useEffect(() => {
-        fetchQuestions(currentPage, sortOption);
+        fetchQuestions(currentPage, 10, sortOption);
     }, []);
 
     const handlePageChange = (newPage: number) => {
-        fetchQuestions(newPage, sortOption);
+        fetchQuestions(newPage, 10, sortOption);
         window.scrollTo(0, 0);
     };
 
     const handleSortChange = (newSort: string) => {
-        fetchQuestions(1, newSort);
+        fetchQuestions(1, 10, newSort);
         window.scrollTo(0, 0);
     };
 
@@ -169,7 +169,7 @@ const Home: React.FC = () => {
                                 <p className="mb-2">Error loading questions:</p>
                                 <p>{questionsError}</p>
                                 <button
-                                    onClick={() => fetchQuestions(currentPage, sortOption)}
+                                    onClick={() => fetchQuestions(currentPage, 10, sortOption)}
                                     className="mt-4 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
                                 >
                                     Try Again
