@@ -49,7 +49,6 @@ public class DefaultQuestionService implements QuestionService {
         var pageable = PageRequest.of(Math.max(pageNo - 1, 0), pageSize, sort);
         Page<Question> questionsPage = repository.findAll(pageable);
 
-        // Load tags for each question
         questionsPage.forEach(question -> {
             Set<Tag> tags = tagRepository.findByQuestionId(question.getId());
             question.setTags(tags);

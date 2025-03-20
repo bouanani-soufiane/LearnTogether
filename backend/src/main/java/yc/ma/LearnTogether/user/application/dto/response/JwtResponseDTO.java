@@ -5,5 +5,6 @@ public record JwtResponseDTO(
         String type,
         Long id,
         String email,
-        String role
+        String role,
+        UserResponseDTO profile
 ) {}

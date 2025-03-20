@@ -7,7 +7,6 @@ public record UserResponseDTO(
         Long id,
         String fullName,
         String email,
-        String password,
         UserStatus status,
         UserRole role,
         ProfileResponseDTO profile

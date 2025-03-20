@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import yc.ma.LearnTogether.common.domain.exception.NotFoundException;
 import yc.ma.LearnTogether.user.application.dto.request.create.UserRequestDTO;
 import yc.ma.LearnTogether.user.application.dto.response.JwtResponseDTO;
+import yc.ma.LearnTogether.user.application.dto.response.ProfileResponseDTO;
 import yc.ma.LearnTogether.user.application.dto.response.UserResponseDTO;
+import yc.ma.LearnTogether.user.domain.model.User;
 import yc.ma.LearnTogether.user.domain.service.AuthService;
 import yc.ma.LearnTogether.user.domain.service.UserService;
 import yc.ma.LearnTogether.user.infrastructure.jwt.JwtTokenProvider;
@@ -25,12 +28,18 @@ public class DefaultAuthService implements AuthService {
         String jwt = tokenProvider.generateToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
+        // Get the user's profile
+        UserResponseDTO user = userService.findById(userDetails.getId());
+
+        // Map profile to ProfileResponseDTO
+
         return new JwtResponseDTO(
                 jwt,
                 "Bearer",
                 userDetails.getId(),
                 userDetails.getUsername(),
-                userDetails.getAuthorities().stream().findFirst().get().getAuthority()
+                userDetails.getAuthorities().stream().findFirst().get().getAuthority(),
+                user
         );
     }
 

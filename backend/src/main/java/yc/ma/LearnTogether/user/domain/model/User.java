@@ -12,7 +12,7 @@ import java.time.LocalDate;
 
 @Table(name = "users", schema = "youcoder")
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__(@PersistenceCreator))
+@AllArgsConstructor( onConstructor = @__(@PersistenceCreator))
 @ToString
 @NoArgsConstructor()
 @Slf4j

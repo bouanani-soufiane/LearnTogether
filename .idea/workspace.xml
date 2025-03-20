@@ -5,152 +5,54 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3044a988-5a88-48be-a204-cc7390c5e408" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/LearnTogether.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/LearnTogether.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/compose.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/mvnw" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mvnw" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/mvnw.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/backend/mvnw.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/content/domain/service/impl/DefaultQuestionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/content/domain/service/impl/DefaultQuestionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/media/domain/model/Media.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/media/domain/model/Media.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/user/application/dto/response/JwtResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/user/application/dto/response/JwtResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/user/application/dto/response/UserResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/user/application/dto/response/UserResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/user/domain/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/user/domain/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/user/domain/service/impl/DefaultAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/user/domain/service/impl/DefaultAuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/user/infrastructure/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/yc/ma/LearnTogether/user/infrastructure/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/db/changelog/migrations/user-changelog.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/db/changelog/migrations/user-changelog.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/test/java/yc/ma/LearnTogether/LearnTogetherApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/yc/ma/LearnTogether/LearnTogetherApplicationTests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/test/java/yc/ma/LearnTogether/TestcontainersConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/yc/ma/LearnTogether/TestcontainersConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/LearnTogetherApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/common/application/PagedResult.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/common/application/mapper/BaseMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/common/application/service/CrudService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/common/application/validation/EntityExists.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/common/application/validation/UniqueValue.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/common/application/validation/validator/EntityExistenceValidator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/common/application/validation/validator/UniqueValueValidator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/common/domain/exception/NotFoundException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/common/domain/exception/UnauthorizedException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/common/infrastructure/security/SecurityUtils.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/common/web/ErrorResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/common/web/GlobalExceptionHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/request/create/AnswerCreateDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/request/create/CreateBlogRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/request/create/CreateCommentRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/request/create/QuestionCreateDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/request/create/ReviewBlogRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/request/create/TagCreateDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/request/create/VoteCreateDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/request/update/AnswerUpdateDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/request/update/QuestionUpdateDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/request/update/TagUpdateDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/request/update/UpdateBlogRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/response/AnswerResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/response/BlogResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/response/BlogSummaryDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/response/CommentResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/response/QuestionResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/response/TagResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/dto/response/VoteResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/mapper/AnswerMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/mapper/BlogMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/mapper/CommentMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/mapper/QuestionMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/mapper/TagMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/application/mapper/VoteMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/exception/ResourceNotFoundException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/model/Answer.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/model/Blog.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/model/BlogTagReference.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/model/Comment.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/model/Like.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/model/Question.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/model/QuestionTagReference.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/model/ReviewStatus.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/model/Tag.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/model/Vote.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/repository/BlogRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/repository/BlogTagReferenceRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/repository/QuestionRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/repository/QuestionTagReferenceRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/repository/TagRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/service/BlogService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/service/QuestionService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/service/TagService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/service/impl/BlogAuthorizationService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/service/impl/DefaultBlogService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/service/impl/DefaultQuestionService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/service/impl/DefaultTagService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/domain/service/impl/QuestionAuthorizationService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/web/BlogController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/web/BlogTagController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/web/QuestionController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/web/QuestionTagController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/content/web/TagController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/media/application/dto/ImageResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/media/application/dto/UpdateImageDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/media/application/dto/UploadImageRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/media/application/mapper/MediaMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/media/domain/model/Media.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/media/domain/repository/MediaRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/media/domain/service/CloudinaryService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/media/domain/service/MediaService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/media/domain/service/MediaServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/media/web/MediaController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/application/dto/projection/UserProjection.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/application/dto/request/create/LoginRequestDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/application/dto/request/create/ProfileCreateDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/application/dto/request/create/UserRequestDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/application/dto/request/update/UserUpdateDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/application/dto/response/JwtResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/application/dto/response/ProfileResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/application/dto/response/UserResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/application/mapper/ProfileMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/application/mapper/UserMapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/application/service/ApplicationService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/domain/exception/BadRequestException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/domain/model/Profile.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/domain/model/User.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/domain/model/UserRole.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/domain/model/UserStatus.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/domain/repository/UserRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/domain/service/AuthService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/domain/service/UserService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/domain/service/impl/DefaultAuthService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/domain/service/impl/DefaultUserService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/infrastructure/config/SecurityConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/infrastructure/jwt/JwtAuthenticationEntryPoint.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/infrastructure/jwt/JwtAuthenticationFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/infrastructure/jwt/JwtProperties.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/infrastructure/jwt/JwtTokenProvider.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/infrastructure/jwt/exception/ExpiredJwtException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/infrastructure/jwt/exception/MalformedJwtException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/infrastructure/jwt/exception/UnsupportedJwtException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/infrastructure/userdetails/UserDetailsImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/infrastructure/userdetails/UserDetailsServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/web/AuthController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/yc/ma/LearnTogether/user/web/UserController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/db.changelog-master.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/migrations/V1__create_schemas.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/migrations/clubs-changelog.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/migrations/content-changelog.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/migrations/media-changelog.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/migrations/reputation-changelog.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/db/changelog/migrations/user-changelog.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/yc/ma/LearnTogether/LearnTogetherApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/yc/ma/LearnTogether/TestLearnTogetherApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/yc/ma/LearnTogether/TestcontainersConfiguration.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/uml.mermaid" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/routes/Route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/routes/Route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/AdminUsersPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/AdminUsersPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/components/QuestionCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/components/QuestionCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/pages/home/AskQuestionPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/pages/home/AskQuestionPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/services/tagService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/services/tagService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/store/questionStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/store/questionStore.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client/src/store/tagStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/client/src/store/tagStore.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compose.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/yc/ma/LearnTogether/content/application/mapper/AnswerMapperImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/yc/ma/LearnTogether/content/application/mapper/BlogMapperImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/yc/ma/LearnTogether/content/application/mapper/CommentMapperImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/yc/ma/LearnTogether/content/application/mapper/QuestionMapperImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/yc/ma/LearnTogether/content/application/mapper/TagMapperImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/yc/ma/LearnTogether/content/application/mapper/VoteMapperImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/yc/ma/LearnTogether/media/application/mapper/MediaMapperImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/yc/ma/LearnTogether/user/application/mapper/ProfileMapperImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/yc/ma/LearnTogether/user/application/mapper/UserMapperImpl.class" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -167,10 +69,16 @@
     &quot;accountId&quot;: &quot;c0072259-1b4f-4584-95ce-933a9e7fddfb&quot;
   }
 }</component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/client/package.json" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
   <component name="ProjectId" id="2tldDIlhTrZMaJsntcezpeiugHW" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="autoscrollToSource" value="true" />
@@ -189,6 +97,7 @@
     &quot;Maven.LearnTogether [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.LearnTogether [compile].executor&quot;: &quot;Run&quot;,
     &quot;Maven.Unknown [clean,compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Unknown [clean,package].executor&quot;: &quot;Run&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
@@ -198,13 +107,15 @@
     &quot;Spring Boot.LearnTogetherApplication.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/fala7on/Downloads/LearnTogether/client&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/fala7on/Downloads/LearnTogether/backend&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.poratu.idea.plugins.tomcat.setting.TomcatServersConfigurable&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/fala7on/Downloads/LearnTogether/client/node_modules/typescript/lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -223,7 +134,7 @@
       <command value="mvn clean compile " />
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="npm.dev">
     <configuration name="LearnTogetherApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
       <module name="LearnTogether" />
@@ -232,6 +143,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/client/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.dev" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -250,6 +176,19 @@
       <updated>1740930473348</updated>
       <workItem from="1740930474429" duration="3265000" />
       <workItem from="1740935135017" duration="14000" />
+      <workItem from="1740996231534" duration="2530000" />
+      <workItem from="1741284493942" duration="685000" />
+      <workItem from="1741340055705" duration="328000" />
+      <workItem from="1741341515808" duration="10387000" />
+      <workItem from="1741485980262" duration="13214000" />
+      <workItem from="1741614893681" duration="150000" />
+      <workItem from="1741619353143" duration="1214000" />
+      <workItem from="1741699198361" duration="647000" />
+      <workItem from="1742220028590" duration="494000" />
+      <workItem from="1742236235177" duration="15000" />
+      <workItem from="1742236348163" duration="1287000" />
+      <workItem from="1742385001640" duration="5169000" />
+      <workItem from="1742462889232" duration="2272000" />
     </task>
     <servers />
   </component>

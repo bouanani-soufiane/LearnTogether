@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE, onConstructor = @__(@PersistenceCreator))
+@AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Media {
 
