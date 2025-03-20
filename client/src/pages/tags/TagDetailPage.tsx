@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { ArrowLeft, Eye, EyeOff, Info, BarChart2, Calendar, Users, MessageSquare } from 'lucide-react'
@@ -8,37 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
+import { getTagById } from "../services/tagService"
+import { useTagStore } from "@/store/tagStore"
 
-// Mock data for a specific tag
-const tagData = {
-    name: "react",
-    description: "React is a JavaScript library for building user interfaces. It uses a declarative, component-based paradigm and aims to be efficient and flexible.",
-    longDescription: "React (also known as React.js or ReactJS) is a free and open-source front-end JavaScript library for building user interfaces based on components. It is maintained by Meta (formerly Facebook) and a community of individual developers and companies. React can be used to develop single-page, mobile, or server-rendered applications with frameworks like Next.js. React is only concerned with the user interface and rendering components to the DOM, so creating React applications usually requires the use of additional libraries for routing, as well as certain client-side functionality.",
-    count: 876543,
-    isWatched: true,
-    isIgnored: false,
-    createdAt: "2013-05-29T14:23:00Z",
-    stats: {
-        asked: 876543,
-        answered: 743210,
-        unanswered: 133333,
-        acceptedRate: 67,
-        topUsers: [
-            { id: "1", name: "John Doe", reputation: 123456, count: 543 },
-            { id: "2", name: "Jane Smith", reputation: 98765, count: 421 },
-            { id: "3", name: "Bob Johnson", reputation: 87654, count: 387 }
-        ],
-        relatedTags: [
-            { name: "javascript", count: 543210 },
-            { name: "jsx", count: 321098 },
-            { name: "react-hooks", count: 210987 },
-            { name: "redux", count: 198765 },
-            { name: "next.js", count: 176543 }
-        ]
-    }
-}
-
-// Mock data for questions with this tag
+// Mock data for questions with this tag - this would be replaced with actual API data
 const questionsData = [
     {
         id: "1",
@@ -98,30 +70,181 @@ const questionsData = [
 ]
 
 export default function TagDetailPage() {
-    const { tagName } = useParams<{ tagName: string }>()
+    const { tagName } = useParams()
     const [activeTab, setActiveTab] = useState("info")
-    const [tag, setTag] = useState(tagData)
+    const [tag, setTag] = useState(null)
     const [questions, setQuestions] = useState(questionsData)
-    const [isWatched, setIsWatched] = useState(tag.isWatched)
-    const [isIgnored, setIsIgnored] = useState(tag.isIgnored)
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState(null)
 
-    // In a real app, you would fetch tag data and questions based on the tagName
+    const { watchTag, ignoreTag, resetTagPreference, watchedTags, ignoredTags } = useTagStore()
+
     useEffect(() => {
-        // Fetch tag data and questions
-        // This is just a mock implementation
-        console.log(`Fetching data for tag: ${tagName}`)
-    }, [tagName])
+        const fetchTagData = async () => {
+            if (!tagName) return
+
+            setIsLoading(true)
+            try {
+                // First attempt to fetch tag by name
+                // In a real implementation, you'd have a getTagByName function
+                // For now, we'll search through the tags from the store
+                const allTags = await useTagStore.getState().fetchTags()
+                const foundTag = allTags?.find(t => t.name === tagName)
+
+                if (foundTag) {
+                    // Enhance tag with additional data
+                    const enhancedTag = {
+                        ...foundTag,
+                        isWatched: watchedTags.has(foundTag.id),
+                        isIgnored: ignoredTags.has(foundTag.id),
+                        description: foundTag.description || `Tag for ${foundTag.name} related questions.`,
+                        longDescription: foundTag.longDescription ||
+                            `${foundTag.name} is a popular tag used for questions about ${foundTag.name} technologies and concepts. Use this tag when you have questions related to ${foundTag.name} implementation, best practices, or issues.`,
+                        count: foundTag.count || Math.floor(Math.random() * 100000),
+                        stats: {
+                            asked: foundTag.count || Math.floor(Math.random() * 100000),
+                            answered: Math.floor((foundTag.count || Math.floor(Math.random() * 100000)) * 0.85),
+                            unanswered: Math.floor((foundTag.count || Math.floor(Math.random() * 100000)) * 0.15),
+                            acceptedRate: Math.floor(Math.random() * 40) + 40, // 40-80% acceptance rate
+                            topUsers: [
+                                { id: "1", name: "John Doe", reputation: 123456, count: 543 },
+                                { id: "2", name: "Jane Smith", reputation: 98765, count: 421 },
+                                { id: "3", name: "Bob Johnson", reputation: 87654, count: 387 }
+                            ],
+                            relatedTags: [
+                                { name: "javascript", count: 543210 },
+                                { name: "jsx", count: 321098 },
+                                { name: "react-hooks", count: 210987 },
+                                { name: "redux", count: 198765 },
+                                { name: "next.js", count: 176543 }
+                            ]
+                        }
+                    }
+                    setTag(enhancedTag)
+                } else {
+                    // If not found, create a mock tag
+                    const mockTag = {
+                        id: Math.floor(Math.random() * 1000),
+                        name: tagName,
+                        description: `Tag for ${tagName} related questions.`,
+                        longDescription: `${tagName} is a tag used for questions about ${tagName} technologies and concepts. Use this tag when you have questions related to ${tagName} implementation, best practices, or issues.`,
+                        count: Math.floor(Math.random() * 100000),
+                        isWatched: false,
+                        isIgnored: false,
+                        createdAt: new Date().toISOString(),
+                        stats: {
+                            asked: Math.floor(Math.random() * 100000),
+                            answered: Math.floor(Math.random() * 80000),
+                            unanswered: Math.floor(Math.random() * 20000),
+                            acceptedRate: Math.floor(Math.random() * 40) + 40, // 40-80% acceptance rate
+                            topUsers: [
+                                { id: "1", name: "John Doe", reputation: 123456, count: 543 },
+                                { id: "2", name: "Jane Smith", reputation: 98765, count: 421 },
+                                { id: "3", name: "Bob Johnson", reputation: 87654, count: 387 }
+                            ],
+                            relatedTags: [
+                                { name: "javascript", count: 543210 },
+                                { name: "jsx", count: 321098 },
+                                { name: "react-hooks", count: 210987 },
+                                { name: "redux", count: 198765 },
+                                { name: "next.js", count: 176543 }
+                            ]
+                        }
+                    }
+                    setTag(mockTag)
+                }
+
+                // Here you would also fetch questions related to this tag
+                // For now, we're using the mock data
+
+                setIsLoading(false)
+            } catch (err) {
+                console.error("Error fetching tag data:", err)
+                setError(err.message || "An error occurred while fetching tag data")
+                setIsLoading(false)
+            }
+        }
+
+        fetchTagData()
+    }, [tagName, watchedTags, ignoredTags])
 
     const handleWatchToggle = () => {
-        setIsWatched(!isWatched)
-        setIsIgnored(false)
-        // In a real app, you would call an API to update the user's preferences
+        if (!tag) return
+
+        if (tag.isWatched) {
+            resetTagPreference(tag.id)
+        } else {
+            watchTag(tag.id)
+        }
+
+        // Update local state for immediate UI response
+        setTag({
+            ...tag,
+            isWatched: !tag.isWatched,
+            isIgnored: false
+        })
     }
 
     const handleIgnoreToggle = () => {
-        setIsIgnored(!isIgnored)
-        setIsWatched(false)
-        // In a real app, you would call an API to update the user's preferences
+        if (!tag) return
+
+        if (tag.isIgnored) {
+            resetTagPreference(tag.id)
+        } else {
+            ignoreTag(tag.id)
+        }
+
+        // Update local state for immediate UI response
+        setTag({
+            ...tag,
+            isIgnored: !tag.isIgnored,
+            isWatched: false
+        })
+    }
+
+    // Loading state
+    if (isLoading) {
+        return (
+            <div className="container mx-auto py-6 flex justify-center items-center min-h-[50vh]">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700 mx-auto"></div>
+                    <p className="mt-4 text-muted-foreground">Loading tag details...</p>
+                </div>
+            </div>
+        )
+    }
+
+    // Error state
+    if (error) {
+        return (
+            <div className="container mx-auto py-6 flex justify-center items-center min-h-[50vh]">
+                <div className="text-center">
+                    <div className="text-red-600 text-xl mb-4">Error loading tag details</div>
+                    <p className="text-muted-foreground">{error}</p>
+                    <Button className="mt-4" onClick={() => window.location.reload()}>
+                        Try Again
+                    </Button>
+                </div>
+            </div>
+        )
+    }
+
+    // If no tag data
+    if (!tag) {
+        return (
+            <div className="container mx-auto py-6">
+                <Link to="/tags" className="text-blue-600 hover:text-blue-800 flex items-center gap-2">
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to Tags
+                </Link>
+                <div className="mt-8 text-center">
+                    <h1 className="text-2xl font-bold mb-4">Tag Not Found</h1>
+                    <p className="text-muted-foreground">
+                        The tag "{tagName}" could not be found or doesn't exist.
+                    </p>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -138,30 +261,30 @@ export default function TagDetailPage() {
                             {tag.name}
                         </Badge>
                         <span className="text-xl text-muted-foreground">
-              {tag.count.toLocaleString()} questions
-            </span>
+                            {tag.count?.toLocaleString()} questions
+                        </span>
                     </h1>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
                     <Button
-                        variant={isWatched ? "default" : "outline"}
+                        variant={tag.isWatched ? "default" : "outline"}
                         size="sm"
                         onClick={handleWatchToggle}
-                        className={isWatched ? "bg-blue-600 hover:bg-blue-700" : ""}
+                        className={tag.isWatched ? "bg-blue-600 hover:bg-blue-700" : ""}
                     >
                         <Eye className="h-4 w-4 mr-2" />
-                        {isWatched ? "Watching" : "Watch Tag"}
+                        {tag.isWatched ? "Watching" : "Watch Tag"}
                     </Button>
 
                     <Button
-                        variant={isIgnored ? "default" : "outline"}
+                        variant={tag.isIgnored ? "default" : "outline"}
                         size="sm"
                         onClick={handleIgnoreToggle}
-                        className={isIgnored ? "bg-red-600 hover:bg-red-700" : ""}
+                        className={tag.isIgnored ? "bg-red-600 hover:bg-red-700" : ""}
                     >
                         <EyeOff className="h-4 w-4 mr-2" />
-                        {isIgnored ? "Ignoring" : "Ignore Tag"}
+                        {tag.isIgnored ? "Ignoring" : "Ignore Tag"}
                     </Button>
 
                     <Link to={`/questions/ask?tags=${tag.name}`}>
@@ -217,7 +340,7 @@ export default function TagDetailPage() {
                                             <h3 className="text-sm font-medium mb-2">Questions</h3>
                                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                                 <MessageSquare className="h-4 w-4" />
-                                                {tag.count.toLocaleString()}
+                                                {tag.count?.toLocaleString()}
                                             </div>
                                         </div>
                                     </div>
@@ -296,8 +419,8 @@ export default function TagDetailPage() {
                                                     </Badge>
                                                 </Link>
                                                 <span className="text-xs text-muted-foreground">
-                          {relatedTag.count.toLocaleString()}
-                        </span>
+                                                    {relatedTag.count.toLocaleString()}
+                                                </span>
                                             </div>
                                         ))}
                                     </div>
