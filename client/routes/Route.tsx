@@ -9,6 +9,7 @@ import QuestionDetailPage from "@/pages/home/QuestionDetailPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import TagsPage from "@/pages/tags/TagsPage";
 import TagDetailPage from "@/pages/tags/TagDetailPage";
+import NewTagPage from "@/pages/tags/NewTagPage"; // Import the new component
 import AdminUsersPage from "@/pages/profile/users";
 import LeaderboardPage from "@/pages/LeaderboardPage";
 
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/login",
-        element: <Login />,
+        element: <Login />
     },
     {
         path: "",
@@ -47,23 +48,27 @@ const router = createBrowserRouter([
             },
             {
                 path: '/profile',
-                element: <ProfilePage />,
-            } ,
+                element: <ProfilePage />
+            },
             {
                 path: '/users',
-                element: <AdminUsersPage />,
-            } ,
+                element: <AdminUsersPage />
+            },
             {
                 path: "/tags",
-                element: <TagsPage />,
+                element: <TagsPage />
+            },
+            {
+                path: "/tags/new",
+                element: <NewTagPage />
             },
             {
                 path: "/tags/:tagName",
-                element: <TagDetailPage />,
+                element: <TagDetailPage />
             },
             {
                 path: "/questions/tagged/:tagName",
-                element: <TagDetailPage />,
+                element: <Home />
             },
         ]
     }

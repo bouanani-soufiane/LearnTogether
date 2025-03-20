@@ -1,76 +1,173 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import LexicalEditor from '../../components/LexicalEditor';
 import MarkdownTips from '../../components/MarkdownTips';
-import { FaPaperPlane, FaTimes, FaMarkdown } from 'react-icons/fa';
+import { FaPaperPlane, FaTimes, FaMarkdown, FaPlus, FaSearch, FaSpinner } from 'react-icons/fa';
 import { useAuthStore } from '../../store/authStore';
 import { useQuestionStore } from '../../store/questionStore';
-
-interface TagSuggestion {
-    id: number;
-    name: string;
-}
+import { useTagStore } from '../../store/tagStore';
+import { Tag } from '../../services/tagService';
+import { useToast } from '../../hooks/use-toast';
 
 const AskQuestionPage: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { toast } = useToast();
     const { isAuthenticated } = useAuthStore();
     const { submitQuestion, isSubmittingQuestion, createQuestionError } = useQuestionStore();
+    const {
+        tags,
+        fetchTags,
+        searchTags,
+        createTag,
+        isLoading: isTagLoading,
+        error: tagError
+    } = useTagStore();
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [selectedTags, setSelectedTags] = useState<TagSuggestion[]>([]);
+    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
     const [tagInput, setTagInput] = useState('');
-    const [tagSuggestions, setTagSuggestions] = useState<TagSuggestion[]>([]);
+    const [tagSuggestions, setTagSuggestions] = useState<Tag[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [titleError, setTitleError] = useState<string | null>(null);
     const [contentError, setContentError] = useState<string | null>(null);
+    const [isCreatingTag, setIsCreatingTag] = useState(false);
+    const [isSearchingTags, setIsSearchingTags] = useState(false);
+    const [isCreateTagModalOpen, setIsCreateTagModalOpen] = useState(false);
 
+    const tagInputRef = useRef<HTMLInputElement>(null);
+    const suggestionsRef = useRef<HTMLDivElement>(null);
+
+    // Handle authentication check
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/login', { state: { from: '/questions/ask' } });
         }
     }, [isAuthenticated, navigate]);
 
-    const mockTagSuggestions: TagSuggestion[] = [
-        { id: 1, name: 'java' },
-        { id: 2, name: 'spring' },
-        { id: 3, name: 'react' },
-        { id: 4, name: 'javascript' },
-        { id: 5, name: 'typescript' },
-        { id: 6, name: 'sql' },
-        { id: 7, name: 'database' },
-        { id: 8, name: 'hibernate' },
-        { id: 9, name: 'jpa' },
-        { id: 10, name: 'spring-boot' },
-    ];
-
+    // Fetch tags on component mount
     useEffect(() => {
-        if (tagInput.trim()) {
-            const filtered = mockTagSuggestions.filter(
-                tag => tag.name.toLowerCase().includes(tagInput.toLowerCase())
-            );
-            setTagSuggestions(filtered);
-        } else {
-            setTagSuggestions([]);
+        fetchTags();
+    }, [fetchTags]);
+
+    // Handle URL query parameters for pre-filled tags
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const tagParam = queryParams.get('tags');
+
+        if (tagParam) {
+            const tagNames = tagParam.split(',').map(t => t.trim());
+            const matchedTags = tags.filter(tag => tagNames.includes(tag.name));
+            if (matchedTags.length > 0) {
+                setSelectedTags(matchedTags);
+            }
         }
-    }, [tagInput]);
+    }, [location.search, tags]);
+
+    // Handle tag search
+    useEffect(() => {
+        const searchTagsAsync = async () => {
+            if (tagInput.trim().length < 1) {
+                setTagSuggestions([]);
+                setIsSearchingTags(false);
+                return;
+            }
+
+            setIsSearchingTags(true);
+            try {
+                const searchResults = await searchTags(tagInput.trim(), 10);
+                // Filter out tags that are already selected
+                const filteredResults = searchResults.filter(
+                    tag => !selectedTags.some(selectedTag => selectedTag.id === tag.id)
+                );
+                setTagSuggestions(filteredResults);
+            } catch (error) {
+                console.error('Error searching tags:', error);
+                // In case of error, fall back to local filtering
+                const filtered = tags.filter(
+                    tag =>
+                        tag.name.toLowerCase().includes(tagInput.toLowerCase()) &&
+                        !selectedTags.some(selectedTag => selectedTag.id === tag.id)
+                );
+                setTagSuggestions(filtered);
+            } finally {
+                setIsSearchingTags(false);
+            }
+        };
+
+        // Use a debounce to avoid too many API calls
+        const timeoutId = setTimeout(searchTagsAsync, 300);
+        return () => clearTimeout(timeoutId);
+    }, [tagInput, tags, selectedTags, searchTags]);
+
+    // Handle click outside suggestions to close them
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                suggestionsRef.current &&
+                !suggestionsRef.current.contains(event.target as Node) &&
+                tagInputRef.current &&
+                !tagInputRef.current.contains(event.target as Node)
+            ) {
+                setShowSuggestions(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTagInput(e.target.value);
         setShowSuggestions(true);
     };
 
-    const addTag = (tag: TagSuggestion) => {
+    const addTag = (tag: Tag) => {
         if (!selectedTags.some(t => t.id === tag.id)) {
-            setSelectedTags([...selectedTags, tag]);
+            if (selectedTags.length < 5) {
+                setSelectedTags([...selectedTags, tag]);
+                setTagInput('');
+                setShowSuggestions(false);
+
+                // Focus the input again after adding a tag
+                if (tagInputRef.current) {
+                    tagInputRef.current.focus();
+                }
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Tag limit reached",
+                    description: "You can only add up to 5 tags per question.",
+                });
+            }
         }
-        setTagInput('');
-        setShowSuggestions(false);
     };
 
     const removeTag = (id: number) => {
         setSelectedTags(selectedTags.filter(tag => tag.id !== id));
+    };
+
+    const handleCreateNewTag = async () => {
+        if (tagInput.trim().length < 2) {
+            toast({
+                variant: "destructive",
+                title: "Invalid tag name",
+                description: "Tag name must be at least 2 characters long.",
+            });
+            return;
+        }
+
+        setIsCreateTagModalOpen(true);
+    };
+
+    const handleTagCreated = (newTag: Tag) => {
+        // Add the newly created tag to selected tags
+        addTag(newTag);
+        setIsCreateTagModalOpen(false);
     };
 
     const validateForm = () => {
@@ -107,6 +204,15 @@ const AskQuestionPage: React.FC = () => {
             return;
         }
 
+        if (selectedTags.length === 0) {
+            toast({
+                variant: "destructive",
+                title: "Tags required",
+                description: "Please add at least one tag to your question.",
+            });
+            return;
+        }
+
         const questionData = {
             title,
             content,
@@ -116,6 +222,11 @@ const AskQuestionPage: React.FC = () => {
         const newQuestionId = await submitQuestion(questionData);
 
         if (newQuestionId) {
+            toast({
+                variant: "success",
+                title: "Question posted successfully",
+                description: "Your question has been submitted."
+            });
             navigate(`/questions/${newQuestionId}`);
         }
     };
@@ -216,30 +327,93 @@ const AskQuestionPage: React.FC = () => {
                                 </div>
 
                                 <div className="relative">
-                                    <input
-                                        type="text"
-                                        id="tags"
-                                        value={tagInput}
-                                        onChange={handleTagInputChange}
-                                        placeholder="e.g. spring, java, database"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        onFocus={() => setShowSuggestions(true)}
-                                        onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                                    />
+                                    <div className="flex mb-2">
+                                        <div className="relative flex-1">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                {isSearchingTags ? (
+                                                    <FaSpinner className="animate-spin text-gray-400" />
+                                                ) : (
+                                                    <FaSearch className="text-gray-400" />
+                                                )}
+                                            </div>
+                                            <input
+                                                ref={tagInputRef}
+                                                type="text"
+                                                id="tags"
+                                                value={tagInput}
+                                                onChange={handleTagInputChange}
+                                                placeholder="Search for tags or type to create new"
+                                                className="w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                onFocus={() => setShowSuggestions(true)}
+                                            />
+                                        </div>
+                                        {tagInput.trim().length >= 2 && (
+                                            <button
+                                                type="button"
+                                                onClick={handleCreateNewTag}
+                                                className="ml-2 px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center"
+                                            >
+                                                <FaPlus className="mr-1" />
+                                                Create
+                                            </button>
+                                        )}
+                                    </div>
 
-                                    {showSuggestions && tagSuggestions.length > 0 && (
-                                        <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm overflow-auto border border-gray-200">
+                                    {showSuggestions && (
+                                        <div
+                                            ref={suggestionsRef}
+                                            className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm overflow-auto border border-gray-200"
+                                        >
+                                            {isSearchingTags && (
+                                                <div className="px-4 py-3 text-gray-500 flex items-center">
+                                                    <FaSpinner className="animate-spin mr-2" />
+                                                    Searching tags...
+                                                </div>
+                                            )}
+
+                                            {!isSearchingTags && tagSuggestions.length === 0 && tagInput.trim() !== '' && (
+                                                <div className="px-4 py-3 text-gray-500">
+                                                    No matching tags found. You can create a new tag.
+                                                </div>
+                                            )}
+
+                                            {!isSearchingTags && tagSuggestions.length === 0 && tagInput.trim() === '' && (
+                                                <div className="px-4 py-3 text-gray-500">
+                                                    Type to search for tags
+                                                </div>
+                                            )}
+
                                             {tagSuggestions.map(tag => (
                                                 <div
                                                     key={tag.id}
-                                                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center"
                                                     onClick={() => addTag(tag)}
                                                 >
-                                                    {tag.name}
+                                                    <div className="flex items-center">
+                                                        <span className="font-medium">{tag.name}</span>
+                                                    </div>
+                                                    <span className="text-xs text-gray-500">
+                                                        {tag.count || 0} questions
+                                                    </span>
                                                 </div>
                                             ))}
                                         </div>
                                     )}
+                                </div>
+
+                                <div className="mt-3 text-sm text-gray-500">
+                                    Popular tags:
+                                    {tags.slice(0, 5).map((tag, index) => (
+                                        <button
+                                            key={tag.id}
+                                            type="button"
+                                            onClick={() => addTag(tag)}
+                                            className="mx-1 text-blue-600 hover:text-blue-800"
+                                            disabled={selectedTags.some(t => t.id === tag.id)}
+                                        >
+                                            {tag.name}{index < 4 ? ',' : ''}
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -276,6 +450,7 @@ const AskQuestionPage: React.FC = () => {
                     </form>
                 </div>
             </div>
+
         </div>
     );
 };

@@ -1,6 +1,12 @@
 // src/store/tagStore.ts
 import { create } from 'zustand';
-import { getAllTags, getTagById, searchTags, createTag, Tag } from '../services/tagService';
+import {
+    getAllTags,
+    getTagById,
+    searchTags,
+    createTag as createTagService,
+    Tag
+} from '../services/tagService';
 
 interface TagState {
     tags: Tag[];
@@ -17,6 +23,10 @@ interface TagState {
     searchTags: (query: string, limit?: number) => Promise<Tag[]>;
     createTag: (name: string) => Promise<Tag | undefined>;
 
+    // UI state management
+    clearError: () => void;
+    setLoading: (loading: boolean) => void;
+
     // User preference actions
     watchTag: (tagId: number) => void;
     ignoreTag: (tagId: number) => void;
@@ -30,6 +40,12 @@ export const useTagStore = create<TagState>((set, get) => ({
 
     watchedTags: new Set<number>(),
     ignoredTags: new Set<number>(),
+
+    // Action to set loading state
+    setLoading: (loading: boolean) => set({ isLoading: loading }),
+
+    // Action to clear error
+    clearError: () => set({ error: null }),
 
     fetchTags: async () => {
         set({ isLoading: true, error: null });
@@ -54,28 +70,40 @@ export const useTagStore = create<TagState>((set, get) => ({
     },
 
     fetchTagById: async (id: number) => {
+        set({ isLoading: true, error: null });
         try {
             const tag = await getTagById(id);
+            set({ isLoading: false });
             return tag;
-        } catch (error) {
-            console.error(`Error fetching tag ${id}:`, error);
+        } catch (error: any) {
+            set({
+                error: error.message || `Failed to fetch tag with ID ${id}`,
+                isLoading: false
+            });
             return undefined;
         }
     },
 
     searchTags: async (query: string, limit?: number) => {
+        set({ isLoading: true, error: null });
         try {
             const tags = await searchTags(query, limit);
+            set({ isLoading: false });
             return tags;
-        } catch (error) {
-            console.error('Error searching tags:', error);
+        } catch (error: any) {
+            set({
+                error: error.message || 'Failed to search tags',
+                isLoading: false
+            });
             return [];
         }
     },
 
     createTag: async (name: string) => {
+        set({ isLoading: true, error: null });
         try {
-            const tag = await createTag(name);
+            const tag = await createTagService(name);
+
             // Add the new tag to the store
             set(state => ({
                 tags: [...state.tags, {
@@ -85,11 +113,34 @@ export const useTagStore = create<TagState>((set, get) => ({
                     createdAt: new Date().toISOString(),
                     isWatched: false,
                     isIgnored: false
-                }]
+                }],
+                isLoading: false
             }));
+
             return tag;
-        } catch (error) {
-            console.error('Error creating tag:', error);
+        } catch (error: any) {
+            // Handle different types of errors from the API
+            let errorMessage = 'Failed to create tag';
+
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                if (error.response.status === 400) {
+                    errorMessage = 'Invalid tag name. Please try again.';
+                } else if (error.response.status === 401) {
+                    errorMessage = 'You must be logged in to create tags.';
+                } else if (error.response.status === 403) {
+                    errorMessage = 'You do not have permission to create tags.';
+                } else if (error.response.status === 409) {
+                    errorMessage = 'A tag with this name already exists.';
+                } else if (error.response.data && error.response.data.message) {
+                    errorMessage = error.response.data.message;
+                }
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            set({ error: errorMessage, isLoading: false });
             return undefined;
         }
     },

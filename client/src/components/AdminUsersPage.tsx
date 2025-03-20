@@ -258,365 +258,430 @@ const AdminUsersPage = () => {
     }
 
     return (
-        <div className="pt-16">
-            <div className="max-w-screen-xl mx-auto px-4 py-8">
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
-                    <div>
-                        <h1 className="text-2xl font-bold bg-gradient-to-r from-sky-600 to-orange-500 bg-clip-text text-transparent">
-                            User Management
-                        </h1>
-                        <p className="text-gray-600 mt-1">Manage all users and their permissions</p>
-                    </div>
-                    <div className="flex gap-3 mt-4 md:mt-0">
-                        <button
-                            className="flex items-center gap-2 px-4 py-2 bg-white border border-sky-200 rounded-xl text-sky-600 hover:bg-sky-50 transition-colors shadow-sm"
-                            onClick={() => navigate("/admin/users/new")}
-                        >
-                            <Shield size={16} />
-                            <span>Add User</span>
-                        </button>
-                        <button
-                            className="flex items-center gap-2 px-4 py-2 bg-white border border-sky-200 rounded-xl text-sky-600 hover:bg-sky-50 transition-colors shadow-sm"
-                            onClick={() => {}}
-                        >
-                            <Download size={16} />
-                            <span>Export</span>
-                        </button>
-                    </div>
-                </div>
+      <div className="pt-16">
+        <div className="max-w-screen-xl mx-auto px-4 py-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-sky-600 to-orange-500 bg-clip-text text-transparent">
+                User Management
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Manage all users and their permissions
+              </p>
+            </div>
+            <div className="flex gap-3 mt-4 md:mt-0">
+              <button
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-sky-200 rounded-xl text-sky-600 hover:bg-sky-50 transition-colors shadow-sm"
+                onClick={() => navigate("/admin/users/new")}
+              >
+                <Shield size={16} />
+                <span>Add User</span>
+              </button>
+              <button
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-sky-200 rounded-xl text-sky-600 hover:bg-sky-50 transition-colors shadow-sm"
+                onClick={() => {}}
+              >
+                <Download size={16} />
+                <span>Export</span>
+              </button>
+            </div>
+          </div>
 
-                {/* Search and filters */}
-                <div className="bg-white rounded-xl shadow-sm border border-sky-100/50 p-4 mb-6">
-                    <div className="flex flex-col md:flex-row gap-4">
-                        <div className="flex-1 relative">
-                            <input
-                                type="text"
-                                placeholder="Search users by name or email..."
-                                className="w-full py-2 pr-10 pl-10 border border-sky-100 bg-white/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500/50 transition-all duration-200"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                            <Search size={18} className="absolute left-3 top-2.5 text-gray-400" />
-                            {searchQuery && (
-                                <button
-                                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
-                                    onClick={() => setSearchQuery("")}
-                                >
-                                    <XCircle size={18} />
-                                </button>
-                            )}
-                        </div>
-                        <button
-                            className="flex items-center gap-2 px-4 py-2 bg-white border border-sky-200 rounded-xl text-sky-600 hover:bg-sky-50 transition-colors"
-                            onClick={() => setShowFilters(!showFilters)}
-                        >
-                            <Filter size={16} />
-                            <span>Filters</span>
-                            {showFilters ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                        </button>
-                    </div>
-
-                    {showFilters && (
-                        <div className="mt-4 pt-4 border-t border-sky-100/50 grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                                <select
-                                    className="w-full py-2 px-3 border border-sky-100 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500/50 transition-all duration-200"
-                                    value={selectedRole || ""}
-                                    onChange={(e) => setSelectedRole(e.target.value || null)}
-                                >
-                                    <option value="">All Roles</option>
-                                    <option value="ADMIN">Admin</option>
-                                    <option value="MODERATOR">Moderator</option>
-                                    <option value="USER">User</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                                <select
-                                    className="w-full py-2 px-3 border border-sky-100 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500/50 transition-all duration-200"
-                                    value={selectedStatus || ""}
-                                    onChange={(e) => setSelectedStatus(e.target.value || null)}
-                                >
-                                    <option value="">All Statuses</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Suspended">Suspended</option>
-                                    <option value="Pending">Pending</option>
-                                </select>
-                            </div>
-                            <div className="flex items-end">
-                                <button
-                                    className="px-4 py-2 text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-colors"
-                                    onClick={resetFilters}
-                                >
-                                    Reset Filters
-                                </button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Users table */}
-                <div className="bg-white rounded-xl shadow-sm border border-sky-100/50 overflow-hidden">
-                    {selectedUsers.length > 0 && (
-                        <div className="bg-sky-50 p-4 border-b border-sky-100/50 flex items-center justify-between">
-                            <div className="text-sm text-sky-700">
-                                <span className="font-medium">{selectedUsers.length}</span> users selected
-                            </div>
-                            <div className="flex gap-2">
-                                <button className="px-3 py-1.5 text-sm text-sky-600 hover:text-sky-700 hover:bg-sky-100/50 rounded-lg transition-colors">
-                                    <Mail size={16} className="inline mr-1" /> Email
-                                </button>
-                                <button className="px-3 py-1.5 text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-100/50 rounded-lg transition-colors">
-                                    <UserX size={16} className="inline mr-1" /> Suspend
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {isUsersLoading ? (
-                        <div className="flex justify-center items-center p-12">
-                            <Loader2 className="h-8 w-8 animate-spin text-sky-500" />
-                            <span className="ml-2 text-gray-500">Loading users...</span>
-                        </div>
-                    ) : usersError ? (
-                        <div className="p-8 text-center">
-                            <div className="text-red-500 mb-2">Error loading users</div>
-                            <div className="text-sm text-gray-500">{usersError}</div>
-                            <button
-                                className="mt-4 px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600"
-                                onClick={() => {
-                                    clearErrors()
-                                    fetchUsers(currentPage, usersPerPage)
-                                }}
-                            >
-                                Try Again
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full divide-y divide-sky-100/50">
-                                <thead className="bg-sky-50/50">
-                                <tr>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    >
-                                        <div className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                className="h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded"
-                                                checked={isSelectAll}
-                                                onChange={toggleSelectAll}
-                                            />
-                                        </div>
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    >
-                                        <button
-                                            className="flex items-center gap-1 hover:text-sky-600"
-                                            onClick={() => handleSort("fullName")}
-                                        >
-                                            User
-                                            {sortField === "fullName" &&
-                                                (sortDirection === "asc" ? <ChevronUp size={14} /> : <ChevronDown size={14} />)}
-                                        </button>
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    >
-                                        <button className="flex items-center gap-1 hover:text-sky-600" onClick={() => handleSort("role")}>
-                                            Role
-                                            {sortField === "role" &&
-                                                (sortDirection === "asc" ? <ChevronUp size={14} /> : <ChevronDown size={14} />)}
-                                        </button>
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    >
-                                        <button
-                                            className="flex items-center gap-1 hover:text-sky-600"
-                                            onClick={() => handleSort("status")}
-                                        >
-                                            Status
-                                            {sortField === "status" &&
-                                                (sortDirection === "asc" ? <ChevronUp size={14} /> : <ChevronDown size={14} />)}
-                                        </button>
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    >
-                                        <button
-                                            className="flex items-center gap-1 hover:text-sky-600"
-                                            onClick={() => handleSort("joinedAt")}
-                                        >
-                                            Joined
-                                            {sortField === "joinedAt" &&
-                                                (sortDirection === "asc" ? <ChevronUp size={14} /> : <ChevronDown size={14} />)}
-                                        </button>
-                                    </th>
-                                    <th
-                                        scope="col"
-                                        className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                    >
-                                        Actions
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-sky-100/50">
-                                {filteredUsers.map((user) => (
-                                    <tr key={user.id} className="hover:bg-sky-50/50 transition-colors">
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <input
-                                                type="checkbox"
-                                                className="h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded"
-                                                checked={selectedUsers.includes(user.id)}
-                                                onChange={() => toggleUserSelection(user.id)}
-                                            />
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center">
-                                                <div className="flex-shrink-0 h-10 w-10">
-                                                    <img
-                                                        className="h-10 w-10 rounded-full"
-                                                        src={`/placeholder.svg?height=40&width=40&text=${user.fullName.charAt(0)}`}
-                                                        alt={user.fullName}
-                                                    />
-                                                </div>
-                                                <div className="ml-4">
-                                                    <div className="text-sm font-medium text-gray-900">{user.fullName}</div>
-                                                    <div className="text-sm text-gray-500">{user.email}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{getRoleBadge(user.role)}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(user.status)}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {formatDate(user.profile.joinedAt)}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <div className="relative inline-block text-left">
-                                                {selectedUsers.length === 0 && (
-                                                    <ActionMenu
-                                                        user={user}
-                                                        onEdit={() => handleEditUser(user)}
-                                                        onDelete={() => handleDeleteUser(user.id)}
-                                                        onSuspendToggle={() => handleToggleSuspension(user)}
-                                                    />
-                                                )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-
-                    {/* Pagination */}
-                    {!isUsersLoading && !usersError && (
-                        <div className="px-6 py-4 flex items-center justify-between border-t border-sky-100/50">
-                            <div className="flex-1 flex justify-between sm:hidden">
-                                <button
-                                    onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                                    disabled={currentPage === 1 || isProcessing}
-                                    className="relative inline-flex items-center px-4 py-2 border border-sky-200 text-sm font-medium rounded-xl text-sky-700 bg-white hover:bg-sky-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    Previous
-                                </button>
-                                <button
-                                    onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                                    disabled={currentPage === totalPages || isProcessing}
-                                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-sky-200 text-sm font-medium rounded-xl text-sky-700 bg-white hover:bg-sky-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    Next
-                                </button>
-                            </div>
-                            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                                <div>
-                                    <p className="text-sm text-gray-700">
-                                        {usersResponse && (
-                                            <>
-                                                Showing <span className="font-medium">{(currentPage - 1) * usersPerPage + 1}</span> to{" "}
-                                                <span className="font-medium">
-                          {Math.min(currentPage * usersPerPage, usersResponse.totalElements)}
-                        </span>{" "}
-                                                of <span className="font-medium">{usersResponse.totalElements}</span> results
-                                            </>
-                                        )}
-                                    </p>
-                                </div>
-                                <div>
-                                    <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                                        <button
-                                            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                                            disabled={currentPage === 1 || isProcessing}
-                                            className="relative inline-flex items-center px-2 py-2 rounded-l-xl border border-sky-200 bg-white text-sm font-medium text-sky-500 hover:bg-sky-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            <span className="sr-only">Previous</span>
-                                            <ChevronDown className="h-5 w-5 rotate-90" />
-                                        </button>
-
-                                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                                            let pageNum
-                                            if (totalPages <= 5) {
-                                                pageNum = i + 1
-                                            } else if (currentPage <= 3) {
-                                                pageNum = i + 1
-                                            } else if (currentPage >= totalPages - 2) {
-                                                pageNum = totalPages - 4 + i
-                                            } else {
-                                                pageNum = currentPage - 2 + i
-                                            }
-
-                                            return (
-                                                <button
-                                                    key={pageNum}
-                                                    onClick={() => handlePageChange(pageNum)}
-                                                    disabled={isProcessing}
-                                                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                                                        currentPage === pageNum
-                                                            ? "z-10 bg-sky-50 border-sky-500 text-sky-600"
-                                                            : "bg-white border-sky-200 text-gray-500 hover:bg-sky-50"
-                                                    } ${isProcessing ? "opacity-50 cursor-not-allowed" : ""}`}
-                                                >
-                                                    {pageNum}
-                                                </button>
-                                            )
-                                        })}
-
-                                        <button
-                                            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                                            disabled={currentPage === totalPages || isProcessing}
-                                            className="relative inline-flex items-center px-2 py-2 rounded-r-xl border border-sky-200 bg-white text-sm font-medium text-sky-500 hover:bg-sky-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            <span className="sr-only">Next</span>
-                                            <ChevronDown className="h-5 w-5 -rotate-90" />
-                                        </button>
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
+          {/* Search and filters */}
+          <div className="bg-white rounded-xl shadow-sm border border-sky-100/50 p-4 mb-6">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  placeholder="Search users by name or email..."
+                  className="w-full py-2 pr-10 pl-10 border border-sky-100 bg-white/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500/50 transition-all duration-200"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <Search
+                  size={18}
+                  className="absolute left-3 top-2.5 text-gray-400"
+                />
+                {searchQuery && (
+                  <button
+                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                    onClick={() => setSearchQuery("")}
+                  >
+                    <XCircle size={18} />
+                  </button>
+                )}
+              </div>
+              <button
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-sky-200 rounded-xl text-sky-600 hover:bg-sky-50 transition-colors"
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                <Filter size={16} />
+                <span>Filters</span>
+                {showFilters ? (
+                  <ChevronUp size={16} />
+                ) : (
+                  <ChevronDown size={16} />
+                )}
+              </button>
             </div>
 
-            {/* Edit Profile Modal */}
-            {editingUser && (
-                <EditProfileModal
-                    isOpen={isEditModalOpen}
-                    onClose={() => setIsEditModalOpen(false)}
-                    userId={editingUser.id}
-                    profile={editingUser.profile}
-                />
+            {showFilters && (
+              <div className="mt-4 pt-4 border-t border-sky-100/50 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Role
+                  </label>
+                  <select
+                    className="w-full py-2 px-3 border border-sky-100 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500/50 transition-all duration-200"
+                    value={selectedRole || ""}
+                    onChange={(e) => setSelectedRole(e.target.value || null)}
+                  >
+                    <option value="">All Roles</option>
+                    <option value="ADMIN">Admin</option>
+                    <option value="MODERATOR">Moderator</option>
+                    <option value="USER">User</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Status
+                  </label>
+                  <select
+                    className="w-full py-2 px-3 border border-sky-100 bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500/50 transition-all duration-200"
+                    value={selectedStatus || ""}
+                    onChange={(e) => setSelectedStatus(e.target.value || null)}
+                  >
+                    <option value="">All Statuses</option>
+                    <option value="Active">Active</option>
+                    <option value="Suspended">Suspended</option>
+                    <option value="Pending">Pending</option>
+                  </select>
+                </div>
+                <div className="flex items-end">
+                  <button
+                    className="px-4 py-2 text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-colors"
+                    onClick={resetFilters}
+                  >
+                    Reset Filters
+                  </button>
+                </div>
+              </div>
             )}
+          </div>
+
+          {/* Users table */}
+          <div className="bg-white rounded-xl shadow-sm border border-sky-100/50 overflow-hidden">
+            {selectedUsers.length > 0 && (
+              <div className="bg-sky-50 p-4 border-b border-sky-100/50 flex items-center justify-between">
+                <div className="text-sm text-sky-700">
+                  <span className="font-medium">{selectedUsers.length}</span>{" "}
+                  users selected
+                </div>
+                <div className="flex gap-2">
+                  <button className="px-3 py-1.5 text-sm text-sky-600 hover:text-sky-700 hover:bg-sky-100/50 rounded-lg transition-colors">
+                    <Mail size={16} className="inline mr-1" /> Email
+                  </button>
+                  <button className="px-3 py-1.5 text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-100/50 rounded-lg transition-colors">
+                    <UserX size={16} className="inline mr-1" /> Suspend
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {isUsersLoading ? (
+              <div className="flex justify-center items-center p-12">
+                <Loader2 className="h-8 w-8 animate-spin text-sky-500" />
+                <span className="ml-2 text-gray-500">Loading users...</span>
+              </div>
+            ) : usersError ? (
+              <div className="p-8 text-center">
+                <div className="text-red-500 mb-2">Error loading users</div>
+                <div className="text-sm text-gray-500">{usersError}</div>
+                <button
+                  className="mt-4 px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600"
+                  onClick={() => {
+                    clearErrors();
+                    fetchUsers(currentPage, usersPerPage);
+                  }}
+                >
+                  Try Again
+                </button>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-sky-100/50">
+                  <thead className="bg-sky-50/50">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                       
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-16 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        <button
+                          className="flex items-center gap-1 hover:text-sky-600"
+                          onClick={() => handleSort("fullName")}
+                        >
+                          User
+                          {sortField === "fullName" &&
+                            (sortDirection === "asc" ? (
+                              <ChevronUp size={14} />
+                            ) : (
+                              <ChevronDown size={14} />
+                            ))}
+                        </button>
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        <button
+                          className="flex items-center gap-1 hover:text-sky-600"
+                          onClick={() => handleSort("role")}
+                        >
+                          Role
+                          {sortField === "role" &&
+                            (sortDirection === "asc" ? (
+                              <ChevronUp size={14} />
+                            ) : (
+                              <ChevronDown size={14} />
+                            ))}
+                        </button>
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        <button
+                          className="flex items-center gap-1 hover:text-sky-600"
+                          onClick={() => handleSort("status")}
+                        >
+                          Status
+                          {sortField === "status" &&
+                            (sortDirection === "asc" ? (
+                              <ChevronUp size={14} />
+                            ) : (
+                              <ChevronDown size={14} />
+                            ))}
+                        </button>
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        <button
+                          className="flex items-center gap-1 hover:text-sky-600"
+                          onClick={() => handleSort("joinedAt")}
+                        >
+                          Joined
+                          {sortField === "joinedAt" &&
+                            (sortDirection === "asc" ? (
+                              <ChevronUp size={14} />
+                            ) : (
+                              <ChevronDown size={14} />
+                            ))}
+                        </button>
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-sky-100/50">
+                    {filteredUsers.map((user) => (
+                      <tr
+                        key={user.id}
+                        className="hover:bg-sky-50/50 transition-colors"
+                      >
+                        <td className=" whitespace-nowrap">
+                       
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10">
+                              <img
+                                className="h-10 w-10 rounded-full"
+                                src="https://images.icon-icons.com/1378/PNG/512/avatardefault_92824.png"
+                                alt={user.fullName}
+                              />
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">
+                                {user.fullName}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {user.email}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {getRoleBadge(user.role)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {getStatusBadge(user.status)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {formatDate(user.profile.joinedAt)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <div className="relative inline-block text-left">
+                            {selectedUsers.length === 0 && (
+                              <ActionMenu
+                                user={user}
+                                onEdit={() => handleEditUser(user)}
+                                onDelete={() => handleDeleteUser(user.id)}
+                                onSuspendToggle={() =>
+                                  handleToggleSuspension(user)
+                                }
+                              />
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Pagination */}
+            {!isUsersLoading && !usersError && (
+              <div className="px-6 py-4 flex items-center justify-between border-t border-sky-100/50">
+                <div className="flex-1 flex justify-between sm:hidden">
+                  <button
+                    onClick={() =>
+                      handlePageChange(Math.max(1, currentPage - 1))
+                    }
+                    disabled={currentPage === 1 || isProcessing}
+                    className="relative inline-flex items-center px-4 py-2 border border-sky-200 text-sm font-medium rounded-xl text-sky-700 bg-white hover:bg-sky-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    onClick={() =>
+                      handlePageChange(Math.min(totalPages, currentPage + 1))
+                    }
+                    disabled={currentPage === totalPages || isProcessing}
+                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-sky-200 text-sm font-medium rounded-xl text-sky-700 bg-white hover:bg-sky-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Next
+                  </button>
+                </div>
+                <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-sm text-gray-700">
+                      {usersResponse && (
+                        <>
+                          Showing{" "}
+                          <span className="font-medium">
+                            {(currentPage - 1) * usersPerPage + 1}
+                          </span>{" "}
+                          to{" "}
+                          <span className="font-medium">
+                            {Math.min(
+                              currentPage * usersPerPage,
+                              usersResponse.totalElements
+                            )}
+                          </span>{" "}
+                          of{" "}
+                          <span className="font-medium">
+                            {usersResponse.totalElements}
+                          </span>{" "}
+                          results
+                        </>
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <nav
+                      className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+                      aria-label="Pagination"
+                    >
+                      <button
+                        onClick={() =>
+                          handlePageChange(Math.max(1, currentPage - 1))
+                        }
+                        disabled={currentPage === 1 || isProcessing}
+                        className="relative inline-flex items-center px-2 py-2 rounded-l-xl border border-sky-200 bg-white text-sm font-medium text-sky-500 hover:bg-sky-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <span className="sr-only">Previous</span>
+                        <ChevronDown className="h-5 w-5 rotate-90" />
+                      </button>
+
+                      {Array.from(
+                        { length: Math.min(5, totalPages) },
+                        (_, i) => {
+                          let pageNum;
+                          if (totalPages <= 5) {
+                            pageNum = i + 1;
+                          } else if (currentPage <= 3) {
+                            pageNum = i + 1;
+                          } else if (currentPage >= totalPages - 2) {
+                            pageNum = totalPages - 4 + i;
+                          } else {
+                            pageNum = currentPage - 2 + i;
+                          }
+
+                          return (
+                            <button
+                              key={pageNum}
+                              onClick={() => handlePageChange(pageNum)}
+                              disabled={isProcessing}
+                              className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                                currentPage === pageNum
+                                  ? "z-10 bg-sky-50 border-sky-500 text-sky-600"
+                                  : "bg-white border-sky-200 text-gray-500 hover:bg-sky-50"
+                              } ${
+                                isProcessing
+                                  ? "opacity-50 cursor-not-allowed"
+                                  : ""
+                              }`}
+                            >
+                              {pageNum}
+                            </button>
+                          );
+                        }
+                      )}
+
+                      <button
+                        onClick={() =>
+                          handlePageChange(
+                            Math.min(totalPages, currentPage + 1)
+                          )
+                        }
+                        disabled={currentPage === totalPages || isProcessing}
+                        className="relative inline-flex items-center px-2 py-2 rounded-r-xl border border-sky-200 bg-white text-sm font-medium text-sky-500 hover:bg-sky-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <span className="sr-only">Next</span>
+                        <ChevronDown className="h-5 w-5 -rotate-90" />
+                      </button>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-    )
+
+        {/* Edit Profile Modal */}
+        {editingUser && (
+          <EditProfileModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            userId={editingUser.id}
+            profile={editingUser.profile}
+          />
+        )}
+      </div>
+    );
 }
 
 // Action Menu Component

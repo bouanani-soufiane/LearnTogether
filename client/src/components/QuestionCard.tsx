@@ -59,6 +59,11 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
                         </div>
                         <span className="text-xs">answers</span>
                     </div>
+
+                    <div className="flex flex-col items-center">
+                        <span className="text-lg font-medium text-gray-700">{question.viewCount || 0}</span>
+                        <span className="text-xs text-gray-500">views</span>
+                    </div>
                 </div>
 
                 {/* Question content */}
@@ -88,7 +93,17 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
 
                         {/* User info */}
                         <div className="flex items-center text-xs text-gray-600">
-                            <span className="whitespace-nowrap">asked {formatDate(question.createdAt)}</span>
+                            <span className="whitespace-nowrap">
+                                asked {formatDate(question.createdAt)}
+                                {question.user && (
+                                    <span> by <Link
+                                        to={`/profile/${question.user.id}`}
+                                        className="text-blue-600 hover:text-blue-800"
+                                    >
+                                        {question.user.username}
+                                    </Link></span>
+                                )}
+                            </span>
                         </div>
                     </div>
                 </div>
