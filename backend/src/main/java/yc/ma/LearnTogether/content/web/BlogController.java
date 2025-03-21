@@ -87,7 +87,6 @@ public class BlogController {
         return ResponseEntity.ok(service.unlikeBlog(id));
     }
 
-    // Comment endpoints
     @PostMapping("/{blogId}/comments")
     public ResponseEntity<CommentResponseDTO> addComment(
             @PathVariable Long blogId,

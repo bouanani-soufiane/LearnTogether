@@ -41,17 +41,15 @@ public class DefaultAuthServiceTest {
     private ArgumentCaptor<UserRequestDTO> userRequestCaptor;
 
     @Before
-    public void setUp() {
+    public void setUp () {
         // Create mocks manually
         tokenProvider = Mockito.mock(JwtTokenProvider.class);
         userService = Mockito.mock(UserService.class);
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
         userRequestCaptor = ArgumentCaptor.forClass(UserRequestDTO.class);
 
-        // Create the service manually with mocked dependencies
         authService = new DefaultAuthService(tokenProvider, userService, passwordEncoder);
 
-        // Setup test data
         userDetails = new UserDetailsImpl(
                 1L,
                 "john@example.com",
@@ -72,40 +70,33 @@ public class DefaultAuthServiceTest {
     }
 
     @Test
-    public void generateJwtToken_ShouldReturnJwtResponse() {
+    public void generateJwtToken_ShouldReturnJwtResponse () {
         // Arrange
         String token = "jwt-token";
         when(tokenProvider.generateToken(authentication)).thenReturn(token);
 
-        // Act
         JwtResponseDTO response = authService.generateJwtToken(authentication);
 
-        // Assert
         assertNotNull(response);
         assertEquals(token, response.token());
         assertEquals("Bearer", response.type());
-//        assertEquals(1L, response.id());
         assertEquals("john@example.com", response.email());
         assertEquals("ROLE_STUDENT", response.role());
         verify(tokenProvider).generateToken(authentication);
     }
 
     @Test
-    public void register_ShouldEncodePasswordAndRegisterUser() {
-        // Arrange
+    public void register_ShouldEncodePasswordAndRegisterUser () {
         when(passwordEncoder.encode(userRequestDTO.password())).thenReturn(encodedPassword);
         when(userService.create(any(UserRequestDTO.class))).thenReturn(userResponseDTO);
 
-        // Act
         UserResponseDTO response = authService.register(userRequestDTO);
 
-        // Assert
         assertNotNull(response);
         assertEquals(userResponseDTO, response);
         verify(passwordEncoder).encode(userRequestDTO.password());
         verify(userService).create(userRequestCaptor.capture());
 
-        // Verify the password was encoded in the DTO sent to userService
         UserRequestDTO capturedRequest = userRequestCaptor.getValue();
         assertEquals(userRequestDTO.fullName(), capturedRequest.fullName());
         assertEquals(userRequestDTO.email(), capturedRequest.email());

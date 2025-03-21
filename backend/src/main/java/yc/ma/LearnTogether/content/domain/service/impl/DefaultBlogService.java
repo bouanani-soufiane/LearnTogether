@@ -127,7 +127,7 @@ public class DefaultBlogService implements BlogService {
     @Transactional
     public BlogResponseDTO reviewBlog(Long id, ReviewStatus status) {
         Blog blog = getBlogWithTags(id);
-        validateAdminRole();
+        validateAdminOrTeacherRole();
 
         if (status == ReviewStatus.APPROVED) {
             blog.approve();
@@ -234,9 +234,23 @@ public class DefaultBlogService implements BlogService {
         }
     }
 
-    private void validateAdminRole() {
-        if (!isAdmin()) {
-            throw new AccessDeniedException("Only administrators can review blogs");
+    private boolean isTeacher() {
+        try {
+            UserDetailsImpl currentUser = securityUtils.getCurrentUser();
+            return currentUser.getAuthorities().stream()
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_TEACHER"));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean isAdminOrTeacher() {
+        return isAdmin() || isTeacher();
+    }
+
+    private void validateAdminOrTeacherRole() {
+        if (!isAdminOrTeacher()) {
+            throw new AccessDeniedException("Only administrators and teachers can review blogs");
         }
     }
 }
