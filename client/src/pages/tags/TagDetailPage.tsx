@@ -7,67 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
-import { getTagById } from "../services/tagService"
 import { useTagStore } from "@/store/tagStore"
 
-// Mock data for questions with this tag - this would be replaced with actual API data
-const questionsData = [
-    {
-        id: "1",
-        title: "How to implement authentication with React and Firebase?",
-        body: "I'm trying to implement authentication in my React application using Firebase but I'm running into issues with the user session management...",
-        votes: 24,
-        answers: 3,
-        views: 1243,
-        tags: ["react", "firebase", "authentication"],
-        createdAt: "2023-11-15T14:23:00Z",
-        user: { id: "1", name: "John Doe", reputation: 12345 }
-    },
-    {
-        id: "2",
-        title: "Best practices for state management in large React applications",
-        body: "I'm working on a large-scale React application and I'm wondering what are the current best practices for state management...",
-        votes: 42,
-        answers: 7,
-        views: 3521,
-        tags: ["react", "redux", "state-management"],
-        createdAt: "2023-10-22T09:15:00Z",
-        user: { id: "2", name: "Jane Smith", reputation: 23456 }
-    },
-    {
-        id: "3",
-        title: "How to optimize performance in React with useMemo and useCallback",
-        body: "I'm trying to understand when I should use useMemo and useCallback hooks to optimize my React components...",
-        votes: 18,
-        answers: 5,
-        views: 982,
-        tags: ["react", "performance", "hooks"],
-        createdAt: "2023-09-05T16:45:00Z",
-        user: { id: "3", name: "Bob Johnson", reputation: 34567 }
-    },
-    {
-        id: "4",
-        title: "React Server Components vs. Client Components",
-        body: "What are the main differences between React Server Components and Client Components? When should I use each one?",
-        votes: 36,
-        answers: 4,
-        views: 1876,
-        tags: ["react", "server-components", "next.js"],
-        createdAt: "2023-08-12T11:30:00Z",
-        user: { id: "4", name: "Alice Williams", reputation: 45678 }
-    },
-    {
-        id: "5",
-        title: "How to handle form validation in React?",
-        body: "I'm building a form in React and need to implement validation. What are the best libraries or approaches for this?",
-        votes: 29,
-        answers: 6,
-        views: 2143,
-        tags: ["react", "forms", "validation"],
-        createdAt: "2023-07-28T08:45:00Z",
-        user: { id: "5", name: "Charlie Brown", reputation: 56789 }
-    }
-]
 
 export default function TagDetailPage() {
     const { tagName } = useParams()
@@ -85,14 +26,11 @@ export default function TagDetailPage() {
 
             setIsLoading(true)
             try {
-                // First attempt to fetch tag by name
-                // In a real implementation, you'd have a getTagByName function
-                // For now, we'll search through the tags from the store
+
                 const allTags = await useTagStore.getState().fetchTags()
                 const foundTag = allTags?.find(t => t.name === tagName)
 
                 if (foundTag) {
-                    // Enhance tag with additional data
                     const enhancedTag = {
                         ...foundTag,
                         isWatched: watchedTags.has(foundTag.id),

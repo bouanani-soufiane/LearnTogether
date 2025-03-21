@@ -1,16 +1,22 @@
 import type React from "react"
 import { Link, useLocation } from "react-router-dom"
-import { Globe, HelpCircle, Tag, Users, Trophy, Star, Briefcase, Info, Plus, ChevronRight } from "lucide-react"
+import { Globe, HelpCircle, Tag, Users, Trophy, BookOpenText, Plus, ChevronRight } from "lucide-react"
+import { useAuthStore } from "../store/authStore"
+import { UserRole } from "../types"
 
 type NavItem = {
     icon?: React.ReactNode
     text?: string
     path?: string
     divider?: boolean
+    adminOnly?: boolean
 }
 
 const Sidebar: React.FC = () => {
     const location = useLocation()
+    const { user, isAuthenticated } = useAuthStore()
+
+    const isAdmin = user?.role === UserRole.ADMIN
 
     const isActive = (path: string): boolean => {
         return location.pathname === path
@@ -19,19 +25,24 @@ const Sidebar: React.FC = () => {
     const navItems: NavItem[] = [
         { icon: <Globe size={18} />, text: "Home", path: "/" },
         { icon: <HelpCircle size={18} />, text: "Questions", path: "/questions/ask" },
-        { icon: <Tag size={18} />, text: "Tags", path: "/tags" },
-        { icon: <Users size={18} />, text: "Users", path: "/users" },
+        { icon: <BookOpenText size={18} />, text: "Blog", path: "/blog" },
+        { icon: <Tag size={18} />, text: "Tags", path: "/tags", adminOnly: true },
+        { icon: <Users size={18} />, text: "Users", path: "/users", adminOnly: true },
         { divider: true },
         { icon: <Trophy size={18} />, text: "Leaderboard", path: "/leaderboard" },
         { divider: true },
-        { icon: <Info size={18} />, text: "About", path: "/about" },
     ]
+
+    // Filter items based on admin status
+    const filteredNavItems = navItems.filter(item =>
+        !item.adminOnly || (item.adminOnly && isAdmin)
+    )
 
     return (
         <div className="fixed left-0 top-16 h-[calc(100vh-64px)] w-[240px] bg-gradient-to-b from-white to-sky-50/80 backdrop-blur-sm border-r border-sky-100/50 overflow-y-auto hidden md:block shadow-sm">
             <nav className="mt-6 px-3">
                 <ul className="space-y-1.5">
-                    {navItems.map((item, index) =>
+                    {filteredNavItems.map((item, index) =>
                             item.divider ? (
                                 <li key={`divider-${index}`} className="my-4 border-t border-sky-100/70"></li>
                             ) : (
@@ -89,21 +100,8 @@ const Sidebar: React.FC = () => {
                 </div>
             </div>
 
-            <div className="px-4 mt-6 mb-6">
-                <div className="flex flex-col space-y-2">
-                    <h4 className="text-xs uppercase font-bold text-gray-500">Teams</h4>
-                    <Link
-                        to="/create-team"
-                        className="text-xs flex items-center text-sky-600 hover:text-orange-500 transition-colors"
-                    >
-                        <Plus size={14} className="mr-1" />
-                        Create free Team
-                    </Link>
-                </div>
-            </div>
         </div>
     )
 }
 
 export default Sidebar
-

@@ -9,9 +9,17 @@ import QuestionDetailPage from "@/pages/home/QuestionDetailPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import TagsPage from "@/pages/tags/TagsPage";
 import TagDetailPage from "@/pages/tags/TagDetailPage";
-import NewTagPage from "@/pages/tags/NewTagPage"; // Import the new component
+import NewTagPage from "@/pages/tags/NewTagPage";
 import AdminUsersPage from "@/pages/profile/users";
 import LeaderboardPage from "@/pages/LeaderboardPage";
+
+import AdminRoute from "@/components/auth/AdminRoute";
+import BlogPage from "@/components/blog/BlogPage";
+import BlogDetailPage from "@/components/blog/BlogDetailPage";
+import CreateBlogPage from "@/components/blog/CreateBlogPage";
+import EditBlogPage from "@/components/blog/EditBlogPage";
+import Unauthorized from "@/components/auth/Unauthorized";
+import NotFound from "@/pages/NotFound";
 
 const router = createBrowserRouter([
     {
@@ -21,6 +29,10 @@ const router = createBrowserRouter([
     {
         path: "/login",
         element: <Login />
+    },
+    {
+        path: "/unauthorized",
+        element: <Unauthorized />
     },
     {
         path: "",
@@ -39,8 +51,20 @@ const router = createBrowserRouter([
                 element: <QuestionDetailPage />
             },
             {
-                path: "/about",
-                element: <AboutUs />
+                path: "/blog",
+                element: <BlogPage />
+            },
+            {
+                path: "/blog/:id",
+                element: <BlogDetailPage />
+            },
+            {
+                path: "/blog/new",
+                element: <CreateBlogPage />
+            },
+            {
+                path: "/blog/:id/edit",
+                element: <EditBlogPage />
             },
             {
                 path: "/leaderboard",
@@ -50,17 +74,23 @@ const router = createBrowserRouter([
                 path: '/profile',
                 element: <ProfilePage />
             },
+            // Protected admin routes
             {
-                path: '/users',
-                element: <AdminUsersPage />
-            },
-            {
-                path: "/tags",
-                element: <TagsPage />
-            },
-            {
-                path: "/tags/new",
-                element: <NewTagPage />
+                element: <AdminRoute />,
+                children: [
+                    {
+                        path: '/users',
+                        element: <AdminUsersPage />
+                    },
+                    {
+                        path: "/tags",
+                        element: <TagsPage />
+                    },
+                    {
+                        path: "/tags/new",
+                        element: <NewTagPage />
+                    }
+                ]
             },
             {
                 path: "/tags/:tagName",
@@ -70,7 +100,15 @@ const router = createBrowserRouter([
                 path: "/questions/tagged/:tagName",
                 element: <Home />
             },
+            {
+                path: "*",
+                element: <NotFound />
+            }
         ]
+    },
+    {
+        path: "*",
+        element: <NotFound />
     }
 ] as RouteObject[]);
 
